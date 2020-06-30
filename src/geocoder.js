@@ -10,13 +10,28 @@ const options = {
 	apiKey: process.env.HERE_API_KEY, // for Mapquest, OpenCage, Google Premier
 	formatter: null // 'gpx', 'string', ...
 };
- 
-const geocoder = NodeGeocoder(options);
- 
-geocoder.geocode('29 champs elysée paris')
-	.then((res) =>  {
-		console.log(res);
-	})
-	.catch((err) => {
-		console.log(err);
-});
+
+const singleGeocoding = (address) => {	 
+	const geocoder = NodeGeocoder(options);
+	 
+	geocoder.geocode(address)
+		.then((resulst) =>  {
+			console.log(result);
+		})
+		.catch((error) => {
+			console.log(error);
+	});
+};
+
+const batchGeocoding = (listAddress) => {	 
+	const geocoder = NodeGeocoder(options);
+	 
+	geocoder.batchGeocode(listAddress, (result) => {
+		console.log(results);
+	});
+};
+
+export {
+	singleGeocoding,
+	batchGeocoding,
+};
