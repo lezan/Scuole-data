@@ -11,27 +11,28 @@ const options = {
 	formatter: null // 'gpx', 'string', ...
 };
 
-const singleGeocoding = (address) => {	 
-	const geocoder = NodeGeocoder(options);
-	 
-	geocoder.geocode(address)
-		.then((resulst) =>  {
+module.exports = {
+	singleGeocoding: (address) => {	 
+		const geocoder = NodeGeocoder(options);
+		 
+		const resultData = geocoder.geocode(address)
+			.then((result) =>  {
+				// console.log(result);
+
+				return result;
+			})
+			.catch((error) => {
+				console.log(error);
+		});
+
+		return resultData;
+	},
+	
+	batchGeocoding: (listAddress) => {	 
+		const geocoder = NodeGeocoder(options);
+		 
+		geocoder.batchGeocode(listAddress, (result) => {
 			console.log(result);
-		})
-		.catch((error) => {
-			console.log(error);
-	});
-};
-
-const batchGeocoding = (listAddress) => {	 
-	const geocoder = NodeGeocoder(options);
-	 
-	geocoder.batchGeocode(listAddress, (result) => {
-		console.log(results);
-	});
-};
-
-export {
-	singleGeocoding,
-	batchGeocoding,
+		});
+	},
 };
