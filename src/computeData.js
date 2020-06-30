@@ -17,12 +17,18 @@ module.exports = {
 		return listAddress;
 	},
 
-	checkNumberResult: (data) => {
-		data.forEach((d) => {
-			if (d.value.length > 1) {
-				console.log('Error. More entry from geocoding: ', d.value.length);
+	checkNumberResult: (data, type) => {
+		if (type === 'single') {
+			if (data.length > 1) {
+				console.log('Error. More entry from geocoding: ', data.length);
 			}
-		})
+		} else {
+			data.forEach((d) => {
+				if (d.value.length > 1) {
+					console.log('Error. More entry from geocoding: ', d.value.length);
+				}
+			});
+		}
 	},
 
 	getLatLong: (data, type) => {
