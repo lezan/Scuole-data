@@ -28,11 +28,17 @@ module.exports = {
 		return resultData;
 	},
 	
-	batchGeocoding: (listAddress) => {	 
+	batchGeocoding: (listAddress) => {
 		const geocoder = NodeGeocoder(options);
 		 
-		geocoder.batchGeocode(listAddress, (result) => {
-			console.log(result);
-		});
+		const resultData = geocoder.batchGeocode(listAddress)
+			.then((result) => {
+				return result;
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+
+		return resultData;
 	},
 };

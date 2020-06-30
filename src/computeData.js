@@ -17,13 +17,30 @@ module.exports = {
 		return listAddress;
 	},
 
-	getLatLong: (data) => {
-		const result = data.map((d) => ({
-			lat: d.latitude,
-			long: d.longitude,
-		}));
+	checkNumberResult: (data) => {
+		data.forEach((d) => {
+			if (d.value.length > 1) {
+				console.log('Error. More entry from geocoding: ', d.value.length);
+			}
+		})
+	},
 
-		return result;
+	getLatLong: (data, type) => {
+		if (type === 'single') {
+			const result = data.map((d) => ({
+				lat: d.latitude,
+				long: d.longitude,
+			}));
+
+			return result;
+		} else {
+			const result = data.map((d) => ({
+				lat: d.value[0].latitude,
+				long: d.value[0].longitude,
+			}));
+
+			return result;
+		}
 	},
 
 	mergeData: (data, latLong) => {
