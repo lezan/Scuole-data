@@ -8,8 +8,18 @@ const main = async () => {
 	const listAddress = computeData.getListAddress(data);
 	console.log(listAddress[0]);
 
-	const result = await geocoder.singleGeocoding(listAddress[0]);
-	console.log(result);
+	const geocoderResponse = await geocoder.singleGeocoding(listAddress[0]);
+	console.log(geocoderResponse);
+
+	const listLatLong = computeData.getLatLong(geocoderResponse);
+	console.log(listLatLong[0]);
+	
+	computeData.saveListAddress(listLatLong);
+
+	const mergedData = computeData.mergeData([data[0]], listLatLong);
+	console.log(mergedData);
+
+	computeData.saveData(mergedData, 'test');
 };
 
 main();
