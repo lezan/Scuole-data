@@ -12,6 +12,7 @@
     "dotenv": "^8.2.0",
     "neat-csv": "^5.2.0",
     "node-geocoder": "^3.27.0",
-    "objects-to-csv": "^1.3.6"
+    "objects-to-csv": "^1.3.6",
+    "superagent": "^5.3.1"
   }
 }

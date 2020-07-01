@@ -18,6 +18,17 @@ module.exports = {
 		return listAddress;
 	},
 
+	getListAddressQualified: (data) => {
+		const listAddress = data.map((d) => ({
+			address: d.INDIRIZZOSCUOLA,
+			city: d.DESCRIZIONECOMUNE,
+			postalCode: d.CAPSCUOLA,
+			country: 'IT',
+		}));
+
+		return listAddress;
+	},
+
 	checkNumberResult: (data, type, listAddress) => {
 		let countMore = 0;
 		let countZero = 0;
