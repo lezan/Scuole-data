@@ -1,6 +1,5 @@
 const computeData = require('./computeData.js');
 const geocoder = require('./geocoder.js');
-const batchGeocoder = require('./batchGeocoder');
 
 const main = async () => {
 	// Fetcha i dati.
@@ -43,14 +42,4 @@ const main = async () => {
 	computeData.saveData(mergedData, 'test');
 };
 
-const main2 = async () => {
-	const data = await computeData.getData();
-
-	const listAddress = computeData.getListAddressQualified(data.slice(0, 5));
-
-	computeData.saveListAddress(listAddress);
-
-	const geocoderResponse = await batchGeocoder.runBatchGeocode(listAddress);
-}
-
-main2();
+main();
