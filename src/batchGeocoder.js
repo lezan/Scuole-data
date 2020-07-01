@@ -39,7 +39,7 @@ module.exports = {
 			'&outCols=displayLatitude,displayLongitude',
         	'&outputcombined=false',
         	'&language=it-IT',
-		].join("");
+		].join('');
 		// console.log(url);
 
 		let i = 0;
@@ -76,7 +76,8 @@ module.exports = {
         	'?action=status',
 			'&apiKey=',
 			hereApiKey,
-		].join("");
+		].join('');
+		console.log(url);
 		
 		superagent.get(url)
 			.then((status) => {
@@ -93,7 +94,7 @@ module.exports = {
 			});
 	},
 
-	getResult: (requestId) => {
+	getResult: (requestId, timeRequest) => {
 		const url = [
 			baseUrl,
 			'/',
@@ -101,7 +102,8 @@ module.exports = {
 			'/result?',
 			'apiKey=',
 			hereApiKey,
-		].join("");
+		].join('');
+		console.log(url);
 
 		superagent.get(url)
 			.pipe(unzipper.Parse())
@@ -109,7 +111,7 @@ module.exports = {
 				const content = await d.buffer();
 				const txt = content.toString();
 
-				fs.writeFileSync(`./data/txt_${timeRequest}.json`, JSON.stringify(txt));
+				fs.writeFileSync(`./data/txt_${timeRequest}.txt`, JSON.stringify(txt));
 			}));
 	},
 };
