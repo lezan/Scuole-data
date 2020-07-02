@@ -3,6 +3,8 @@ const superagent= require('superagent');
 const fs = require('fs');
 const unzipper = require('unzipper');
 const etl = require('etl');
+const csvtojson = require("csvtojson");
+const ObjectsToCsv = require('objects-to-csv');
 
 dotenv.config();
 
@@ -34,8 +36,8 @@ module.exports = {
 			hereApiKey,
 			'&action=run',
 			'&header=true',
-			'&inDelim=|',
-			'&outDelim=|',
+			'&inDelim=,',
+			'&outDelim=,',
 			'&outCols=displayLatitude,displayLongitude',
         	'&outputcombined=false',
         	'&language=it-IT',
@@ -43,22 +45,24 @@ module.exports = {
 		// console.log(url);
 
 		let i = 0;
-		const body = 'recId|street|city|postalCode|country \n' + listAddress.map((d) => {
-			return `${i++}|${d.address}|${d.city}|${d.postalCode}|${d.country}`;
+		const body = 'recId,street,city,postalCode,country \n' + listAddress.map((d) => {
+			return `${i++},${d.address},${d.city},${d.postalCode},${d.country}`;
 		}).join('\n');
-		console.log(body);
+		// console.log(body);
 
 		const timeRequest = new Date().getTime();
 
-		superagent.post(url)
+		const result = superagent.post(url)
         	.send(body)
 			.set('Content-Type', 'text/plain')
 			.then((response) => {
 				const result = response.body.toString();
-				console.log(result);
+				// console.log(result);
+
+				console.log('Status: ', findXmlTag(result, 'Status'));
 
 				const requestId = findXmlTag(result, 'RequestId');
-				fs.writeFileSync(`./data/requestId_${timeRequest}.txt`, JSON.stringify(requestId));
+				fs.writeFileSync(`./data/requestId_${timeRequest}.txt`, requestId.toString());
 
 				return requestId;
 
@@ -66,6 +70,8 @@ module.exports = {
 			.catch((error) => {
 				console.error('Error requesting batch geocode', error.message);
 			})
+
+		return result;
 	},
 
 	checkStatusRequest: (requestId) => {
@@ -77,12 +83,12 @@ module.exports = {
 			'&apiKey=',
 			hereApiKey,
 		].join('');
-		console.log(url);
+		// console.log(url);
 		
 		superagent.get(url)
 			.then((status) => {
 				const result = status.body.toString();
-				console.log('Status: ', result);
+				// console.log('Status: ', result);
 
 				console.log('Status: ', findXmlTag(result, 'Status'));
 				console.log('TotalCount: ', findXmlTag(result, 'TotalCount'));
@@ -94,7 +100,7 @@ module.exports = {
 			});
 	},
 
-	getResult: (requestId, timeRequest) => {
+	getResult: (requestId) => {
 		const url = [
 			baseUrl,
 			'/',
@@ -103,15 +109,59 @@ module.exports = {
 			'apiKey=',
 			hereApiKey,
 		].join('');
-		console.log(url);
+		// console.log(url);
 
-		superagent.get(url)
+		const result = superagent.get(url)
 			.pipe(unzipper.Parse())
 			.pipe(etl.map(async (d) => {
 				const content = await d.buffer();
 				const txt = content.toString();
 
-				fs.writeFileSync(`./data/txt_${timeRequest}.txt`, JSON.stringify(txt));
-			}));
+				const one = [];
+				const empty = [];
+				const more = [];
+				const unknown = [];
+
+				csvtojson({
+						noheader: false,
+						delimiter: ","
+					})
+					.fromString(txt)
+					.subscribe((json) => {
+						if (Number(json.seqLength) === 1) {
+							one.push(json);
+						} else if (Number(json.seqLength) < 0) {
+							empty.push(json);
+						} else if (Number(json.seqLength) > 1) {
+							more.push(json);
+						} else {
+							unknown.push(json);
+						}
+					})
+					.on("done", () => {
+						console.log('------------');
+						console.log('Empty: ', empty.length);
+						console.log('More: ', more.length);
+						console.log('Unknown: ', unknown.length);
+						console.log('One: ', one.length);
+						console.log('------------');
+
+						const data = one.map((d) => ({
+							lat: +d.displayLatitude,
+							long: +d.displayLongitude,
+						}));
+
+						return data;
+					});
+		}));
+
+		return result;
 	},
 };
+
+// https://github.com/devbab/plex-ttp/blob/1a1a571861c1f755d5372c774894ce3b86741342/plex-place.js
+// https://developer.here.com/documentation/batch-geocoder/dev_guide/topics/job-status.html
+// https://developer.here.com/documentation/examples/rest/batch_geocoding/batch-geocode-addresses
+// https://developer.here.com/documentation/batch-geocoder/dev_guide/topics/request-constructing.html
+
+// https://github.com/Matheus1714/hackathon-ccr/blob/48c2cd789379c9ac760c01abef0fa01b7b71bb7f/server/modules/hereapi.js
