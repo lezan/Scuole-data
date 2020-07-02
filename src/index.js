@@ -67,7 +67,7 @@ const getResult = async (filename) => {
 	const requestId = fs.readFileSync(`./data/${filename}`, 'utf8');
 
 	const listLatLong = await batchGeocoder.getResult(requestId);
-	console.log(listLatLong);
+	console.log('listLatLong: ', listLatLong);
 
 	// const timeRequest = filename.split('_')[1];
 

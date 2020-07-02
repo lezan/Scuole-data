@@ -3,8 +3,7 @@ const superagent= require('superagent');
 const fs = require('fs');
 const unzipper = require('unzipper');
 const etl = require('etl');
-const csvtojson = require("csvtojson");
-const ObjectsToCsv = require('objects-to-csv');
+const csv = require("csvtojson");
 
 dotenv.config();
 
@@ -111,7 +110,7 @@ module.exports = {
 		].join('');
 		// console.log(url);
 
-		const result = superagent.get(url)
+		const finalResult = superagent.get(url)
 			.pipe(unzipper.Parse())
 			.pipe(etl.map(async (d) => {
 				const content = await d.buffer();
@@ -122,7 +121,7 @@ module.exports = {
 				const more = [];
 				const unknown = [];
 
-				csvtojson({
+				const result = await csv({
 						noheader: false,
 						delimiter: ","
 					})
@@ -153,9 +152,11 @@ module.exports = {
 
 						return data;
 					});
-		}));
 
-		return result;
+				return result;
+			}));
+
+		return finalResult;
 	},
 };
 
