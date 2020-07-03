@@ -87,7 +87,7 @@ getMostFrequentName = (data, type) => {
 		'li', 'lo', 'la',
 		'e',
 		'via',
-		'scuola'
+		'scuola',
 		'infanzia', 'materna', 'media', 'superiore', 'liceo', 'istituto',
 	];
 
