@@ -100,7 +100,7 @@ module.exports = {
 			const el = getMostFrequentName(item.values, 'DENOMINAZIONESCUOLA');
 			occurrences.push(({
 				regione: item.regione,
-				occurrences: el, 
+				occurrences: el,
 			}));
 		});
 
@@ -115,18 +115,29 @@ getMostFrequentName = (data, type) => {
 		'e',
 		'via',
 		'scuola',
-		'infanzia', 'materna', 'media', 'superiore', 'liceo', 'istituto',
+		'infanzia', 'materna', 'primaria', 'media', 'superiore', 'liceo', 'istituto',
+		'IC', 'I.C.', 'istituto comprensivo', 'I. C.',
 	];
 
 	const dataExtracted = [];
 	data.forEach((d) => {
-		const elements = d[type].split(/[\s,]+/);
+		const elements = d[type].split(/[,-]/);
 		elements.forEach((el) => {
 			dataExtracted.push(el);
 		})
 	});
 
-	const dataFiltered = dataExtracted.filter((d) => !listRemoveName.includes(d));
+	const dataFiltered = dataExtracted.map((d) => {
+		let string = d;
+		listRemoveName.forEach((el) => {
+			if (d.includes(el)) {
+				string = string.replace(el, '');
+			}
+		});
+		const noNumber = string.replace(/[0-9]/g, '');
+		const noSymbol = noNumber.replace(/"/g, '');
+		return noSymbol;
+	});
 
 	const occurrences = dataFiltered.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
 
