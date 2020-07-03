@@ -3,78 +3,82 @@ const neatCsv = require('neat-csv');
 const d3Collection = require('d3-collection');
 
 module.exports = {
-	readData = () => {
+	readData: async () => {
 		const importData = fs.readFileSync('./data/SCUANAGRAFESTAT20202120200901.csv');
 		const data = await neatCsv(importData, { separator: ',' });
 	
 		return data;
 	},
 
-	filterData = (data, type,value) => {
+	filterData: (data, type,value) => {
 		const dataFiltered = data.filter((d) => d[type] === value);
 
 		return dataFiltered;
 	},
 	
-	getDataByComune = (data) => {
+	getDataByComune: (data) => {
 		const dataNested = d3Collection.nest()
 			.key((d) => d.DESCRIZIONECOMUNE)
-			.sortKeys((a, b) => a.DESCRIZIONECOMUNE.localeCompare(b.DESCRIZIONECOMUNE))
 			.entries(data)
 			.map((d) => ({
 				comune: d.key,
 				value: d.values.length,
 			}));
+
+		dataNested.sort((a, b) => a.comune.localeCompare(b.comune));
 	
 		return dataNested;
 	},
 	
-	getDataByProvincia = (data) => {
+	getDataByProvincia: (data) => {
 		const dataNested = d3Collection.nest()
 			.key((d) => d.PROVINCIA)
-			.sortKeys((a, b) => a.PROVINCIA.localeCompare(b.PROVINCIA))
 			.entries(data)
 			.map((d) => ({
-				comune: d.key,
+				provincia: d.key,
 				value: d.values.length,
 			}));
+		
+		dataNested.sort((a, b) => a.provincia.localeCompare(b.provincia))
 	
 		return dataNested;
 	},
 	
-	getDataByRegione = (data) => {
+	getDataByRegione: (data) => {
 		const dataNested = d3Collection.nest()
 			.key((d) => d.REGIONE)
-			.sortKeys((a, b) => a.REGIONE.localeCompare(b.REGIONE))
 			.entries(data)
 			.map((d) => ({
-				comune: d.key,
+				regione: d.key,
 				value: d.values.length,
 			}));
 	
+		dataNested.sort((a, b) => a.regione.localeCompare(b.regione))
+
 		return dataNested;
 	},
 
-	getDataByArea = (data) => {
+	getDataByArea: (data) => {
 		const dataNested = d3Collection.nest()
 			.key((d) => d.AREAGEOGRAFICA)
-			.sortKeys((a, b) => a.AREAGEOGRAFICA.localeCompare(b.AREAGEOGRAFICA))
 			.entries(data)
 			.map((d) => ({
-				comune: d.key,
+				area: d.key,
 				value: d.values.length,
 			}));
+
+		dataNested.sort((a, b) => a.area.localCompare(b.area))
 	
 		return dataNested;
 	},
 
-	getMostFrequentNameIstituto = (data) => {
+	getMostFrequentNameIstituto: (data) => {
 		const occurrences = getMostFrequentNameIstituto(data, 'DENOMINAZIONEISTITUTORIFERIMENTO');
 
 		return occurrences;
 	},
 
-	getMostFrequentNameScuola = (data) => {
+	getMostFrequentNameScuola: (data) => {
 		const occurrences = getMostFrequentName(data, 'DENOMINAZIONESCUOLA');
 
 		return occurrences;
