@@ -4,7 +4,7 @@ const d3Collection = require('d3-collection');
 
 module.exports = {
 	readData: async () => {
-		const importData = fs.readFileSync('./data/SCUANAGRAFESTAT20202120200901.csv');
+		const importData = fs.readFileSync('./data/allData.csv');
 		const data = await neatCsv(importData, { separator: ',' });
 	
 		return data;
