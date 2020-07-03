@@ -9,6 +9,12 @@ module.exports = {
 	
 		return data;
 	},
+
+	filterData = (data, type,value) => {
+		const dataFiltered = data.filter((d) => d[type] === value);
+
+		return dataFiltered;
+	},
 	
 	getDataByComune = (data) => {
 		const dataNested = d3Collection.nest()
@@ -47,5 +53,18 @@ module.exports = {
 			}));
 	
 		return dataNested;
-	},	
+	},
+
+	getDataByArea = (data) => {
+		const dataNested = d3Collection.nest()
+			.key((d) => d.AREAGEOGRAFICA)
+			.sortKeys((a, b) => a.AREAGEOGRAFICA.localeCompare(b.AREAGEOGRAFICA))
+			.entries(data)
+			.map((d) => ({
+				comune: d.key,
+				value: d.values.length,
+			}));
+	
+		return dataNested;
+	},
 };
