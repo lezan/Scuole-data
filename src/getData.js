@@ -73,7 +73,7 @@ module.exports = {
 	},
 
 	getMostFrequentNameIstituto: (data) => {
-		const occurrences = getMostFrequentNameIstituto(data, 'DENOMINAZIONEISTITUTORIFERIMENTO');
+		const occurrences = getMostFrequentName(data, 'DENOMINAZIONEISTITUTORIFERIMENTO');
 
 		return occurrences;
 	},
@@ -83,6 +83,29 @@ module.exports = {
 
 		return occurrences;
 	},
+
+	getMostFrequentNameScuolaByRegion: (data) => {
+		const dataNested = d3Collection.nest()
+			.key((d) => d.REGIONE)
+			.entries(data)
+			.map((d) => ({
+				regione: d.key,
+				values: d.values,
+			}));
+
+		dataNested.sort((a, b) => a.regione.localeCompare(b.regione))
+		
+		const occurrences = [];
+		dataNested.forEach((item) => {
+			const el = getMostFrequentName(item.values, 'DENOMINAZIONESCUOLA');
+			occurrences.push(({
+				regione: item.regione,
+				occurrences: el, 
+			}));
+		});
+
+		return occurrences;
+	}
 };
 
 getMostFrequentName = (data, type) => {
@@ -95,8 +118,15 @@ getMostFrequentName = (data, type) => {
 		'infanzia', 'materna', 'media', 'superiore', 'liceo', 'istituto',
 	];
 
-	const dataExtracted = data.map((d) => d[type].split(' '));
-	const dataFiltered = dataExtracted.filter((d) =>  !listRemoveName.includes(d));
+	const dataExtracted = [];
+	data.forEach((d) => {
+		const elements = d[type].split(/[\s,]+/);
+		elements.forEach((el) => {
+			dataExtracted.push(el);
+		})
+	});
+
+	const dataFiltered = dataExtracted.filter((d) => !listRemoveName.includes(d));
 
 	const occurrences = dataFiltered.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
 

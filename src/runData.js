@@ -11,6 +11,14 @@ const main = async () => {
 	computeData.saveData(dataProvincia, 'dataProvincia');
 	computeData.saveData(dataRegione, 'dataRegione');
 
+	const occurrencesIstituto = getData.getMostFrequentNameIstituto(data);
+	computeData.saveJson(occurrencesIstituto, 'occurrencesIstituto');
+
+	const occurrencesScuola = getData.getMostFrequentNameScuola(data);
+	computeData.saveJson(occurrencesScuola, 'occurrencesScuola');
+
+	const occurrencesScuolaByRegion = getData.getMostFrequentNameScuolaByRegion(data);
+	computeData.saveJson(occurrencesScuolaByRegion, 'occurrencesScuolaByRegion');
 };
 
 main();

@@ -119,6 +119,11 @@ module.exports = {
 		fs.writeFileSync('./data/listLatLong.json', JSON.stringify(listLatLong));
 	},
 
+	saveJson: (json, filename) => {
+		fs.writeFileSync(`./data/${filename}.json`, JSON.stringify(json));
+
+	}, 
+
 	saveData: async (data, filename) => {
 		const csvData = new ObjectsToCsv(data);
 	 	await csvData.toDisk(`./data/${filename}.csv`);
