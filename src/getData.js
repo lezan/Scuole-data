@@ -67,4 +67,34 @@ module.exports = {
 	
 		return dataNested;
 	},
+
+	getMostFrequentNameIstituto = (data) => {
+		const occurrences = getMostFrequentNameIstituto(data, 'DENOMINAZIONEISTITUTORIFERIMENTO');
+
+		return occurrences;
+	},
+
+	getMostFrequentNameScuola = (data) => {
+		const occurrences = getMostFrequentName(data, 'DENOMINAZIONESCUOLA');
+
+		return occurrences;
+	},
 };
+
+getMostFrequentName = (data, type) => {
+	const listRemoveName = [
+		'di', 'a', 'da', 'in', 'con',
+		'li', 'lo', 'la',
+		'e',
+		'via',
+		'scuola'
+		'infanzia', 'materna', 'media', 'superiore', 'liceo', 'istituto',
+	];
+
+	const dataExtracted = data.map((d) => d[type].split(' '));
+	const dataFiltered = dataExtracted.filter((d) =>  !listRemoveName.includes(d));
+
+	const occurrences = dataFiltered.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
+
+	return occurrences;
+}
