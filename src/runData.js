@@ -19,6 +19,10 @@ const main = async () => {
 
 	const occurrencesScuolaByRegion = getData.getMostFrequentNameScuolaByRegion(data);
 	computeData.saveJson(occurrencesScuolaByRegion, 'occurrencesScuolaByRegion');
+
+	const listName = ['Pasolini', 'Pirandello', 'Gennaro', 'Foscolo', 'Marconi', 'Garibaldi', 'Mazini', 'Vinci', 'Majorana', 'Piazzi'];
+	const occurrencesScuolaByRegionByList = getData.getFrequentNameScuolaByRegionInList(data, listName);
+	computeData.saveJson(occurrencesScuolaByRegionByList, 'occurrencesScuolaByRegionByList');
 };
 
 main();

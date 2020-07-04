@@ -105,7 +105,41 @@ module.exports = {
 		});
 
 		return occurrences;
-	}
+	},
+
+	getFrequentNameScuolaByRegionInList: (data, listName) => {
+		const dataNested = d3Collection.nest()
+			.key((d) => d.REGIONE)
+			.entries(data)
+			.map((d) => ({
+				regione: d.key,
+				values: d.values,
+			}));
+
+		dataNested.sort((a, b) => a.regione.localeCompare(b.regione))
+		
+		const occurrences = [];
+
+		dataNested.forEach((item) => {
+			const elements = [];
+			item.values.forEach((d) => {
+				listName.forEach((el) => {
+					if (d['DENOMINAZIONESCUOLA'].includes(el.toUpperCase())) {
+						elements.push(el);
+					}
+				})
+			});
+
+			const occurrencesRegion = elements.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
+
+			occurrences.push(({
+				regione: item.regione,
+				values: occurrencesRegion,
+			}));
+		});
+
+		return occurrences;
+	},
 };
 
 getMostFrequentName = (data, type) => {
