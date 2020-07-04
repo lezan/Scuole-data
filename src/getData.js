@@ -112,11 +112,13 @@ getMostFrequentName = (data, type) => {
 	const listRemoveName = [
 		'di', 'a', 'da', 'in', 'con',
 		'li', 'lo', 'la',
+		'del', 'della', 'dello',
 		'e',
-		'via',
+		'via', 'P.ZZA',
 		'scuola',
-		'infanzia', 'materna', 'primaria', 'media', 'superiore', 'liceo', 'istituto',
-		'IC', 'I.C.', 'istituto comprensivo', 'I. C.',
+		'infanzia', 'materna', 'primaria', 'media', 'superiore', 'liceo', 'istituto', 'elem.', 'sc.', 'SC.M.',
+		'scientifico', 
+		'IC', 'I.C.', 'istituto comprensivo', 'I. C.', 'I.I.S.', 'I.T.I.S.',
 	];
 
 	const dataExtracted = [];
@@ -130,8 +132,10 @@ getMostFrequentName = (data, type) => {
 	const dataFiltered = dataExtracted.map((d) => {
 		let string = d;
 		listRemoveName.forEach((el) => {
-			if (d.includes(el)) {
-				string = string.replace(el, '');
+			if (string.includes(el.toUpperCase())) {
+				const regex = new RegExp('\\b' + el.toUpperCase() + '\\b', 'g')
+				const newString = string.replace(regex, '');
+				string = newString;
 			}
 		});
 		const noNumber = string.replace(/[0-9]/g, '');
