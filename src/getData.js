@@ -157,7 +157,7 @@ getMostFrequentName = (data, type) => {
 
 	const dataExtracted = [];
 	data.forEach((d) => {
-		const elements = d[type].split(/[,-]/);
+		const elements = d[type].split(/[ ,-]+/);
 		elements.forEach((el) => {
 			dataExtracted.push(el);
 		})
@@ -165,13 +165,13 @@ getMostFrequentName = (data, type) => {
 
 	const dataFiltered = dataExtracted.map((d) => {
 		let string = d;
-		listRemoveName.forEach((el) => {
-			if (string.includes(el.toUpperCase())) {
-				const regex = new RegExp('\\b' + el.toUpperCase() + '\\b', 'g')
-				const newString = string.replace(regex, '');
-				string = newString;
-			}
-		});
+		// listRemoveName.forEach((el) => {
+		// 	if (string.includes(el.toUpperCase())) {
+		// 		const regex = new RegExp('\\b' + el.toUpperCase() + '\\b', 'g')
+		// 		const newString = string.replace(regex, '');
+		// 		string = newString;
+		// 	}
+		// });
 		const noNumber = string.replace(/[0-9]/g, '');
 		const noSymbol = noNumber.replace(/"/g, '');
 		return noSymbol;
@@ -179,5 +179,12 @@ getMostFrequentName = (data, type) => {
 
 	const occurrences = dataFiltered.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
 
-	return occurrences;
+	const entries = Object.entries(occurrences);
+	const sorted = entries.sort((a, b) => b[1] - a[1]);
+	const result = {};
+	sorted.forEach((d) => {
+		result[d[0]] = d[1];
+	});
+
+	return result;
 }
