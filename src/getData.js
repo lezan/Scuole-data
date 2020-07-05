@@ -159,30 +159,30 @@ getFrequentNameByRegionInList = (data, listName, type) => {
 	return occurrences;
 };
 
-getNestedDataLength = (data, key) => {
+getNestedDataLength = (data, group) => {
 	const dataNested = d3Collection.nest()
-			.key((d) => d[key])
+			.key((d) => d[group])
 			.entries(data)
 			.map((d) => ({
-				comune: d.key,
+				key: d.key,
 				value: d.values.length,
 			}));
 
-	dataNested.sort((a, b) => a[key].localeCompare(b[key]));
+	dataNested.sort((a, b) => a.key.localeCompare(b.key));
 
 	return dataNested;
 };
 
-getNestedData = (data, key) => {
+getNestedData = (data, group) => {
 	const dataNested = d3Collection.nest()
-		.key((d) => d[key])
+		.key((d) => d[group])
 		.entries(data)
 		.map((d) => ({
 			regione: d.key,
 			values: d.values,
 		}));
 
-	dataNested.sort((a, b) => a[key].localeCompare(b[key]));
+	dataNested.sort((a, b) => a.regione.localeCompare(b.regione));
 
 	return dataNested;
 };
