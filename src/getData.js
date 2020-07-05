@@ -1,6 +1,7 @@
 const fs = require('fs');
 const neatCsv = require('neat-csv');
 const d3Collection = require('d3-collection');
+const { getData } = require('./computeData');
 
 module.exports = {
 	readData: async () => {
@@ -17,59 +18,27 @@ module.exports = {
 	},
 	
 	getDataByComune: (data) => {
-		const dataNested = d3Collection.nest()
-			.key((d) => d.DESCRIZIONECOMUNE)
-			.entries(data)
-			.map((d) => ({
-				comune: d.key,
-				value: d.values.length,
-			}));
-
-		dataNested.sort((a, b) => a.comune.localeCompare(b.comune));
+		const result = getNestedDataLength(data, 'DESCRIZIONECOMUNE')
 	
-		return dataNested;
+		return result;
 	},
 	
 	getDataByProvincia: (data) => {
-		const dataNested = d3Collection.nest()
-			.key((d) => d.PROVINCIA)
-			.entries(data)
-			.map((d) => ({
-				provincia: d.key,
-				value: d.values.length,
-			}));
-		
-		dataNested.sort((a, b) => a.provincia.localeCompare(b.provincia))
+		const result = getNestedDataLength(data, 'PROVINCIA');
 	
-		return dataNested;
+		return result;
 	},
 	
 	getDataByRegione: (data) => {
-		const dataNested = d3Collection.nest()
-			.key((d) => d.REGIONE)
-			.entries(data)
-			.map((d) => ({
-				regione: d.key,
-				value: d.values.length,
-			}));
-	
-		dataNested.sort((a, b) => a.regione.localeCompare(b.regione))
+		const result = getNestedDataLength(data, 'REGIONE');
 
-		return dataNested;
+		return result;
 	},
 
 	getDataByArea: (data) => {
-		const dataNested = d3Collection.nest()
-			.key((d) => d.AREAGEOGRAFICA)
-			.entries(data)
-			.map((d) => ({
-				area: d.key,
-				value: d.values.length,
-			}));
-
-		dataNested.sort((a, b) => a.area.localCompare(b.area))
+		const result = getNestedDataLength(data, 'AREAGEOGRAFICA');
 	
-		return dataNested;
+		return result;
 	},
 
 	getMostFrequentNameIstituto: (data) => {
@@ -107,38 +76,16 @@ module.exports = {
 		return occurrences;
 	},
 
+	getFrequentNameIstitutoByRegionInList: (data, listName) => {
+		const result = getFrequentNameByRegionInList(data, listName, 'DENOMINAZIONEISTITUTORIFERIMENTO');
+
+		return result;
+	},
+
 	getFrequentNameScuolaByRegionInList: (data, listName) => {
-		const dataNested = d3Collection.nest()
-			.key((d) => d.REGIONE)
-			.entries(data)
-			.map((d) => ({
-				regione: d.key,
-				values: d.values,
-			}));
+		const result = getFrequentNameByRegionInList(data, listName, 'DENOMINAZIONESCUOLA');
 
-		dataNested.sort((a, b) => a.regione.localeCompare(b.regione))
-		
-		const occurrences = [];
-
-		dataNested.forEach((item) => {
-			const elements = [];
-			item.values.forEach((d) => {
-				listName.forEach((el) => {
-					if (d['DENOMINAZIONESCUOLA'].includes(el.toUpperCase())) {
-						elements.push(el);
-					}
-				})
-			});
-
-			const occurrencesRegion = elements.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
-
-			occurrences.push(({
-				regione: item.regione,
-				values: occurrencesRegion,
-			}));
-		});
-
-		return occurrences;
+		return result;
 	},
 };
 
@@ -179,6 +126,68 @@ getMostFrequentName = (data, type) => {
 
 	const occurrences = dataFiltered.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
 
+	const result = sortOccurrencesByValue(occurrences);
+
+	return result;
+};
+
+getFrequentNameByRegionInList = (data, listName, type) => {
+	const dataNested = getNestedData(data, 'REGIONE');
+		
+	const occurrences = [];
+
+	dataNested.forEach((item) => {
+		const elements = [];
+		item.values.forEach((d) => {
+			listName.forEach((el) => {
+				if (d[type].includes(el.toUpperCase())) {
+					elements.push(el);
+				}
+			})
+		});
+
+		const occurrencesRegion = elements.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
+
+		const result = sortOccurrencesByValue(occurrencesRegion);
+
+		occurrences.push(({
+			regione: item.regione,
+			values: result,
+		}));
+	});
+
+	return occurrences;
+};
+
+getNestedDataLength = (data, key) => {
+	const dataNested = d3Collection.nest()
+			.key((d) => d[key])
+			.entries(data)
+			.map((d) => ({
+				comune: d.key,
+				value: d.values.length,
+			}));
+
+	dataNested.sort((a, b) => a[key].localeCompare(b[key]));
+
+	return dataNested;
+};
+
+getNestedData = (data, key) => {
+	const dataNested = d3Collection.nest()
+		.key((d) => d[key])
+		.entries(data)
+		.map((d) => ({
+			regione: d.key,
+			values: d.values,
+		}));
+
+	dataNested.sort((a, b) => a[key].localeCompare(b[key]));
+
+	return dataNested;
+};
+
+sortOccurrencesByValue = (occurrences) => {
 	const entries = Object.entries(occurrences);
 	const sorted = entries.sort((a, b) => b[1] - a[1]);
 	const result = {};
@@ -187,4 +196,4 @@ getMostFrequentName = (data, type) => {
 	});
 
 	return result;
-}
+};

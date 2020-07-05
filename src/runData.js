@@ -20,7 +20,12 @@ const main = async () => {
 	const occurrencesScuolaByRegion = getData.getMostFrequentNameScuolaByRegion(data);
 	computeData.saveJson(occurrencesScuolaByRegion, 'occurrencesScuolaByRegion');
 
-	const listName = ['Pasolini', 'Pirandello', 'Gennaro', 'Foscolo', 'Marconi', 'Garibaldi', 'Mazini', 'Vinci', 'Majorana', 'Piazzi'];
+	const listName = [
+		'Pasolini', 'Pirandello', 'Gennaro', 'Foscolo', 'Marconi', 'Garibaldi', 'Mazzini', 'Vinci', 'Majorana', "D'Annunzio", 'Bosco', 'Milani',
+		'Leopardi', 'Moro', 'Fermi', 'Pascal', 'Pascoli', 'Montalcini', 'Rodari', 'Galilei', 'Mameli', 'Carducci', 'Umberto', 'Quasimodo',
+		'Alighieri', 'Petrarca', 'Alfieri', 'Montessori', "D'Aquino", 'Cavour', 'Tasso', 'Einaudi', 'Plinio', 'Platone', 'Meli', 'Matteotti',
+		'Pertini', 'Pitagora', 'Verdi', 'Berlinguer', 'Gramsci', 'Borsellino', 'Falcone', 'Manzoni', 'Amicis', 'Collodi', 'Bruno', 'Gasperi', 'Almeyda',
+		'Azeglio', 'Pellico', 'Salvemini', 'Diaz', 'Verga', 'Sciascia', 'Crispi', 'Archimede', 'Sturzo', 'Guttuso', 'Maiorana', 'Giotto', '' ];
 	const occurrencesScuolaByRegionByList = getData.getFrequentNameScuolaByRegionInList(data, listName);
 	computeData.saveJson(occurrencesScuolaByRegionByList, 'occurrencesScuolaByRegionByList');
 };
