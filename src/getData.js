@@ -95,6 +95,17 @@ module.exports = {
 	},
 };
 
+checkWord = (word, string) => {
+	const allowedSeparator = '\\\s-,.;"\'|/()+';
+
+	const regex = new RegExp(
+    	`(^.*[${allowedSeparator}]${word}$)|(^${word}[${allowedSeparator}].*)|(^${word}$)|(^.*[${allowedSeparator}]${word}[${allowedSeparator}].*$)`,
+    	'i',
+	);
+
+	return regex.test(string);
+};
+
 getMostFrequentName = (data, type) => {
 	const listRemoveName = [
 		'di', 'a', 'da', 'in', 'con',
@@ -146,9 +157,14 @@ getFrequentNameByRegionInList = (data, listName, type) => {
 		const elements = [];
 		item.values.forEach((d) => {
 			listName.forEach((el) => {
-				if (d[type].toLowerCase().includes(el)) {
+				// if (d[type].toLowerCase().includes(el)) {
+				if (checkWord(el, d[type].replace(/[0-9]/g, ''))) {
 					elements.push(el);
 				}
+
+				// if (!checkWord(el, d[type].replace(/[0-9]/g, '')) && d[type].toLowerCase().includes(el)) {
+				// 	console.log(`Regione: ${item.regione} | Lista: ${el} | Nome: ${d[type]}`);
+				// }
 			})
 		});
 
