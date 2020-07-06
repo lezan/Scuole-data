@@ -1,14 +1,20 @@
 const fs = require('fs');
 const neatCsv = require('neat-csv');
 const d3Collection = require('d3-collection');
-const { getData } = require('./computeData');
 
 module.exports = {
-	readData: async () => {
-		const importData = fs.readFileSync('./data/allData.csv');
+	readDataCsv: async (filename) => {
+		const importData = fs.readFileSync(`./data/${filename}`);
 		const data = await neatCsv(importData, { separator: ',' });
 	
 		return data;
+	},
+
+	readDataGeoJson: async (filename) => {
+		const importData = fs.readFileSync(`./data/${filename}`);
+		const geoJson = JSON.parse(importData);
+	
+		return geoJson;
 	},
 
 	filterData: (data, type,value) => {
@@ -140,7 +146,7 @@ getFrequentNameByRegionInList = (data, listName, type) => {
 		const elements = [];
 		item.values.forEach((d) => {
 			listName.forEach((el) => {
-				if (d[type].includes(el.toUpperCase())) {
+				if (d[type].toLowerCase().includes(el)) {
 					elements.push(el);
 				}
 			})
