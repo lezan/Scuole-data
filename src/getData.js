@@ -59,44 +59,63 @@ module.exports = {
 		return occurrences;
 	},
 
-	getMostFrequentNameScuolaByRegion: (data) => {
-		const dataNested = d3Collection.nest()
-			.key((d) => d.REGIONE)
-			.entries(data)
-			.map((d) => ({
-				regione: d.key,
-				values: d.values,
-			}));
-
-		dataNested.sort((a, b) => a.regione.localeCompare(b.regione))
-		
-		const occurrences = [];
-		dataNested.forEach((item) => {
-			const el = getMostFrequentName(item.values, 'DENOMINAZIONESCUOLA');
-			occurrences.push(({
-				regione: item.regione,
-				occurrences: el,
-			}));
-		});
+	getMostFrequentNameScuolaByComune: (data) => {
+		const occurrences = getMostFrequentNameScuolaBy(data, 'DESCRIZIONECOMUNE', 'comune')
 
 		return occurrences;
 	},
 
-	getFrequentNameIstitutoByRegionInList: (data, listName) => {
-		const result = getFrequentNameByRegionInList(data, listName, 'DENOMINAZIONEISTITUTORIFERIMENTO');
+	getMostFrequentNameScuolaByProvincia: (data) => {
+		const occurrences = getMostFrequentNameScuolaBy(data, 'PROVINCIA', 'provincia')
+
+		return occurrences;
+	},
+
+	getMostFrequentNameScuolaByRegione: (data) => {
+		const occurrences = getMostFrequentNameScuolaBy(data, 'REGIONE', 'regione')
+
+		return occurrences;
+	},
+
+	getFrequentNameIstitutoByComuneInList: (data, listName) => {
+		const result = getFrequentNameInList(data, listName, 'DENOMINAZIONEISTITUTORIFERIMENTO', 'DESCRIZIONECOMUNE', 'comune');
 
 		return result;
 	},
 
-	getFrequentNameScuolaByRegionInList: (data, listName) => {
-		const result = getFrequentNameByRegionInList(data, listName, 'DENOMINAZIONESCUOLA');
+	getFrequentNameScuolaByComuneInList: (data, listName) => {
+		const result = getFrequentNameInList(data, listName, 'DENOMINAZIONESCUOLA', 'DESCRIZIONECOMUNE', 'comune');
+
+		return result;
+	},
+
+	getFrequentNameIstitutoByProvinciaInList: (data, listName) => {
+		const result = getFrequentNameInList(data, listName, 'DENOMINAZIONEISTITUTORIFERIMENTO', 'PROVINCIA', 'provincia');
+
+		return result;
+	},
+
+	getFrequentNameScuolaByProvinciaInList: (data, listName) => {
+		const result = getFrequentNameInList(data, listName, 'DENOMINAZIONESCUOLA', 'PROVINCIA', 'provincia');
+
+		return result;
+	},
+
+	getFrequentNameIstitutoByRegioneInList: (data, listName) => {
+		const result = getFrequentNameInList(data, listName, 'DENOMINAZIONEISTITUTORIFERIMENTO', 'REGIONE', 'regione');
+
+		return result;
+	},
+
+	getFrequentNameScuolaByRegioneInList: (data, listName) => {
+		const result = getFrequentNameInList(data, listName, 'DENOMINAZIONESCUOLA', 'REGIONE', 'regione');
 
 		return result;
 	},
 };
 
 checkWord = (word, string) => {
-	const allowedSeparator = '\\\s-,.;"\'|/()+';
+	const allowedSeparator = '\\\s-,.;"\'|/()+_=';
 
 	const regex = new RegExp(
     	`(^.*[${allowedSeparator}]${word}$)|(^${word}[${allowedSeparator}].*)|(^${word}$)|(^.*[${allowedSeparator}]${word}[${allowedSeparator}].*$)`,
@@ -148,8 +167,31 @@ getMostFrequentName = (data, type) => {
 	return result;
 };
 
-getFrequentNameByRegionInList = (data, listName, type) => {
-	const dataNested = getNestedData(data, 'REGIONE');
+getMostFrequentNameScuolaBy = (data, group, key) => {
+	const dataNested = d3Collection.nest()
+		.key((d) => d[group])
+		.entries(data)
+		.map((d) => ({
+			[key]: d.key,
+			values: d.values,
+		}));
+
+	dataNested.sort((a, b) => a[key].localeCompare(b[key]))
+	
+	const occurrences = [];
+	dataNested.forEach((item) => {
+		const el = getMostFrequentName(item.values, 'DENOMINAZIONESCUOLA');
+		occurrences.push(({
+			[key]: item[key],
+			occurrences: el,
+		}));
+	});
+
+	return occurrences;
+},
+
+getFrequentNameInList = (data, listName, type, group, key) => {
+	const dataNested = getNestedData(data, group, key);
 		
 	const occurrences = [];
 
@@ -162,18 +204,37 @@ getFrequentNameByRegionInList = (data, listName, type) => {
 					elements.push(el);
 				}
 
+				if (el === 'gasperi') {
+					if (checkWord('degasperi', d[type].replace(/[0-9]/g, ''))) {
+						elements.push(el);
+					}
+				}
+				if (el === 'majorana') {
+					if (checkWord('maiorana', d[type].replace(/[0-9]/g, ''))) {
+						elements.push(el);
+					}
+				}
+				if (el === 'milani') {
+					if (checkWord('donmilani', d[type].replace(/[0-9]/g, ''))) {
+						elements.push(el);
+					}
+					if (checkWord('dmilani', d[type].replace(/[0-9]/g, ''))) {
+						elements.push(el);
+					}
+				}
+
 				// if (!checkWord(el, d[type].replace(/[0-9]/g, '')) && d[type].toLowerCase().includes(el)) {
-				// 	console.log(`Regione: ${item.regione} | Lista: ${el} | Nome: ${d[type]}`);
+				// 	console.log(`${group}: ${item[key]} | Lista: ${el} | Nome: ${d[type]}`);
 				// }
 			})
 		});
 
-		const occurrencesRegion = elements.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
+		const occurrencesRegione = elements.reduce((acc, curr) => (acc[curr] = ++acc[curr] || 1, acc), {});
 
-		const result = sortOccurrencesByValue(occurrencesRegion);
+		const result = sortOccurrencesByValue(occurrencesRegione);
 
 		occurrences.push(({
-			regione: item.regione,
+			[key]: item[key],
 			values: result,
 		}));
 	});
@@ -195,16 +256,16 @@ getNestedDataLength = (data, group) => {
 	return dataNested;
 };
 
-getNestedData = (data, group) => {
+getNestedData = (data, group, key) => {
 	const dataNested = d3Collection.nest()
 		.key((d) => d[group])
 		.entries(data)
 		.map((d) => ({
-			regione: d.key,
+			[key]: d.key,
 			values: d.values,
 		}));
 
-	dataNested.sort((a, b) => a.regione.localeCompare(b.regione));
+	dataNested.sort((a, b) => a[key].localeCompare(b[key]));
 
 	return dataNested;
 };
