@@ -206,12 +206,71 @@ const getOccurrencesScuolaByRegioneInList = async () => {
 	computeData.saveJson(regioneGeoJson, 'regioneNameScuola');
 };
 
-const getBubble = async () => {
+const popolazioneByRegione = {
+	LOMBARDIA: 10018806,
+	LAZIO: 5898124,
+	CAMPANIA: 5839084,
+	SICILIA: 5056641,
+	VENETO: 4907529,
+	"EMILIA-ROMAGNA": 4448841,
+	PIEMONTE: 4392526,
+	PUGLIA: 4063888,
+	TOSCANA: 3742437,
+	CALABRIA: 1965128,
+	SARDEGNA: 1653135,
+	LIGURIA: 1565307,
+	MARCHE: 1538055,
+	ABRUZZO: 1322247,
+	"FRIULI-VENEZIA GIULIA": 1217872,
+	"TRENTINO-ALTO ADIGE": 1062860,
+	UMBRIA: 888908,
+	BASILICATA: 570365,
+	MOLISE: 310449,
+	"VALLE D'AOSTA": 126883,
+};
+
+const getBubbleByRegione = async () => {
 	const dataScuola = await getData.readDataCsv('oldData.csv');
 	const dataAlunni = await getData.readDataCsv('alunni.csv')
 
-	const result = getData.getBubble(dataScuola, dataAlunni);
+	const resultAlunni = getData.getAlunniScuolaByRegione(dataScuola, dataAlunni);
+
+	const resultScuole = getData.getNestedDataLength(dataScuola, 'REGIONE');
+
+	const result = [];
+	resultScuole.forEach((d) => {
+		// result.push([
+		// 	d.value, popolazioneByRegione[d.key], resultAlunni[d.key],
+		// ]);
+		result.push(({
+			id: d.key,
+			data: [{
+				x: d.value,
+				y: popolazioneByRegione[d.key],
+				z: resultAlunni[d.key],
+			}],
+		}));
+	});
+
 	console.log(result);
+
+	let minValueAlunni = Number.MAX_VALUE;
+	let maxValueAlunni = Number.MIN_VALUE;
+	Object.values(resultAlunni).forEach((d) => {
+		if (d < minValueAlunni) {
+			minValueAlunni = d;
+		}
+
+		if (d > maxValueAlunni) {
+			maxValueAlunni = d;
+		}
+	});
+
+	const nodeSize = {
+		key: 'z',
+		values: [minValueAlunni, maxValueAlunni],
+		sizes: [9, 32],
+	};
 };
 
 commander
@@ -228,7 +287,7 @@ commander
 	.option('-goscl, --getOccurrencesScuolaByComuneInList', 'Get occurrences scuola by comune in list')
 	.option('-gospl, --getOccurrencesScuolaByProvinciaInList', 'Get occurrences scuola by provincia in list')
 	.option('-gosrl, --getOccurrencesScuolaByRegioneInList', 'Get occurrences scuola by regione in list')
-	.option('-gb, --getBubble', 'Get data for bubble')
+	.option('-gbr, --getBubbleByRegione', 'Get data by regione for bubble')
 	.option('-a --all', 'Do all')
 	.parse(process.argv);
 
@@ -276,8 +335,8 @@ if (commander.getOccurrencesScuolaByRegioneInList) {
 	getOccurrencesScuolaByRegioneInList();
 }
 
-if (commander.getBubble) {
-	getBubble();
+if (commander.getBubbleByRegione) {
+	getBubbleByRegione();
 }
 
 if (commander.all) {

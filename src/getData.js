@@ -22,6 +22,20 @@ module.exports = {
 
 		return dataFiltered;
 	},
+
+	getNestedDataLength: (data, group) => {
+		const dataNested = d3Collection.nest()
+				.key((d) => d[group])
+				.entries(data)
+				.map((d) => ({
+					key: d.key,
+					value: d.values.length,
+				}));
+	
+		dataNested.sort((a, b) => a.key.localeCompare(b.key));
+	
+		return dataNested;
+	},
 	
 	getDataByComune: (data) => {
 		const result = getNestedDataLength(data, 'DESCRIZIONECOMUNE')
@@ -113,26 +127,20 @@ module.exports = {
 		return result;
 	},
 
-	getBubble: (dataScuola, dataAlunni) => {
-		const mapScuolaRegione = {};
-		dataScuola.forEach((d) => {
-			mapScuolaRegione[d.CODICESCUOLA] = d.REGIONE;
-		});
+	getAlunniScuolaByComune: (dataScuola, dataAlunni) => {
+		const result = getAlunniScuolaByGroup(dataScuola, dataAlunni, 'DESCRIZIONECOMUNE');
 
-		const result = {};
+		return result;
+	},
 
-		dataAlunni.forEach((item) => {
-			const codiceScuola = item.CODICESCUOLA;
-			const numeroAlunni = Number(item.ALUNNI);
+	getAlunniScuolaByProvincia: (dataScuola, dataAlunni) => {
+		const result = getAlunniScuolaByGroup(dataScuola, dataAlunni, 'PROVINCIA');
 
-			const regione = mapScuolaRegione[codiceScuola];
+		return result;
+	},
 
-			if (result[regione] !== undefined) {
-				result[regione] += numeroAlunni;
-			} else {
-				result[regione] = numeroAlunni;
-			}
-		});
+	getAlunniScuolaByRegione: (dataScuola, dataAlunni) => {
+		const result = getAlunniScuolaByGroup(dataScuola, dataAlunni, 'REGIONE');
 
 		return result;
 	},
@@ -266,18 +274,28 @@ getFrequentNameInList = (data, listName, type, group, key) => {
 	return occurrences;
 };
 
-getNestedDataLength = (data, group) => {
-	const dataNested = d3Collection.nest()
-			.key((d) => d[group])
-			.entries(data)
-			.map((d) => ({
-				key: d.key,
-				value: d.values.length,
-			}));
+getAlunniScuolaByGroup = (dataScuola, dataAlunni, group) => {
+	const mapScuolaGroup = {};
+		dataScuola.forEach((d) => {
+			mapScuolaGroup[d.CODICESCUOLA] = d[group];
+		});
 
-	dataNested.sort((a, b) => a.key.localeCompare(b.key));
+		const result = {};
 
-	return dataNested;
+		dataAlunni.forEach((item) => {
+			const codiceScuola = item.CODICESCUOLA;
+			const numeroAlunni = Number(item.ALUNNI);
+
+			const index = mapScuolaGroup[codiceScuola];
+
+			if (result[index] !== undefined) {
+				result[index] += numeroAlunni;
+			} else {
+				result[index] = numeroAlunni;
+			}
+		});
+
+		return result;
 };
 
 getNestedData = (data, group, key) => {
