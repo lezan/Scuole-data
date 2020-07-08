@@ -1,58 +1,59 @@
 const getData = require('./getData.js');
 const computeData = require('./computeData.js');
 const commander = require('commander');
+const { option } = require('commander');
 
 const getDataByComune = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const dataComune = getData.getDataByComune(data);
 	computeData.saveData(dataComune, 'dataComune');
 };
 
 const getDataByProvincia = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const dataProvincia = getData.getDataByProvincia(data);
 	computeData.saveData(dataProvincia, 'dataProvincia');
 };
 
 const getDataByRegion = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const dataRegione = getData.getDataByRegione(data);
 	computeData.saveData(dataRegione, 'dataRegione');
 };
 
 const getOccurrencesIstituto = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesIstituto = getData.getMostFrequentNameIstituto(data);
 	computeData.saveJson(occurrencesIstituto, 'occurrencesIstituto');
 };
 
 const getOccurrencesScuola = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesScuola = getData.getMostFrequentNameScuola(data);
 	computeData.saveJson(occurrencesScuola, 'occurrencesScuola');
 };
 
 const getOccurrencesScuolaByComune = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesScuolaByComune = getData.getMostFrequentNameScuolaByComune(data);
 	computeData.saveJson(occurrencesScuolaByComune, 'occurrencesScuolaByComune');
 };
 
 const getOccurrencesScuolaByProvincia = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesScuolaByProvincia = getData.getMostFrequentNameScuolaByProvincia(data);
 	computeData.saveJson(occurrencesScuolaByProvincia, 'occurrencesScuolaByProvincia');
 };
 
 const getOccurrencesScuolaByRegione = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesScuolaByRegione = getData.getMostFrequentNameScuolaByRegione(data);
 	computeData.saveJson(occurrencesScuolaByRegione, 'occurrencesScuolaByRegione');
@@ -122,7 +123,7 @@ const listName = [
 ];
 
 const getOccurrencesScuolaByComuneInList = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesScuolaByComuneInList = getData.getFrequentNameScuolaByComuneInList(data, listName);
 	computeData.saveJson(occurrencesScuolaByComuneInList, 'occurrencesScuolaByComuneInList');
@@ -150,7 +151,7 @@ const getOccurrencesScuolaByComuneInList = async () => {
 };
 
 const getOccurrencesScuolaByProvinciaInList = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesScuolaByProvinciaInList = getData.getFrequentNameScuolaByProvinciaInList(data, listName);
 	computeData.saveJson(occurrencesScuolaByProvinciaInList, 'occurrencesScuolaByProvinciaInList');
@@ -178,7 +179,7 @@ const getOccurrencesScuolaByProvinciaInList = async () => {
 };
 
 const getOccurrencesScuolaByRegioneInList = async () => {
-	const data = await getData.readDataCsv('allData.csv');
+	const data = await getData.readDataCsv('oldData.csv');
 
 	const occurrencesScuolaByRegioneInList = getData.getFrequentNameScuolaByRegioneInList(data, listName);
 	computeData.saveJson(occurrencesScuolaByRegioneInList, 'occurrencesScuolaByRegioneInList');
@@ -205,6 +206,14 @@ const getOccurrencesScuolaByRegioneInList = async () => {
 	computeData.saveJson(regioneGeoJson, 'regioneNameScuola');
 };
 
+const getBubble = async () => {
+	const dataScuola = await getData.readDataCsv('oldData.csv');
+	const dataAlunni = await getData.readDataCsv('alunni.csv')
+
+	const result = getData.getBubble(dataScuola, dataAlunni);
+	console.log(result);
+};
+
 commander
 	.version('1.0.0', '-v, --version')
 	.usage('[OPTIONS]...')
@@ -219,6 +228,7 @@ commander
 	.option('-goscl, --getOccurrencesScuolaByComuneInList', 'Get occurrences scuola by comune in list')
 	.option('-gospl, --getOccurrencesScuolaByProvinciaInList', 'Get occurrences scuola by provincia in list')
 	.option('-gosrl, --getOccurrencesScuolaByRegioneInList', 'Get occurrences scuola by regione in list')
+	.option('-gb, --getBubble', 'Get data for bubble')
 	.option('-a --all', 'Do all')
 	.parse(process.argv);
 
@@ -264,6 +274,10 @@ if (commander.getOccurrencesScuolaByProvinciaInList) {
 
 if (commander.getOccurrencesScuolaByRegioneInList) {
 	getOccurrencesScuolaByRegioneInList();
+}
+
+if (commander.getBubble) {
+	getBubble();
 }
 
 if (commander.all) {

@@ -112,6 +112,30 @@ module.exports = {
 
 		return result;
 	},
+
+	getBubble: (dataScuola, dataAlunni) => {
+		const mapScuolaRegione = {};
+		dataScuola.forEach((d) => {
+			mapScuolaRegione[d.CODICESCUOLA] = d.REGIONE;
+		});
+
+		const result = {};
+
+		dataAlunni.forEach((item) => {
+			const codiceScuola = item.CODICESCUOLA;
+			const numeroAlunni = Number(item.ALUNNI);
+
+			const regione = mapScuolaRegione[codiceScuola];
+
+			if (result[regione] !== undefined) {
+				result[regione] += numeroAlunni;
+			} else {
+				result[regione] = numeroAlunni;
+			}
+		});
+
+		return result;
+	},
 };
 
 checkWord = (word, string) => {
