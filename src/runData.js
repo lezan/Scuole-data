@@ -229,6 +229,28 @@ const popolazioneByRegione = {
 	"VALLE D'AOSTA": 126883,
 };
 
+const colorsRegione = ['#0b2852',
+	'#087c58',
+	'#fc6600',
+	'#b6e3ff',
+	'#e58d23',
+	'#88c46c',
+	'#31999b',
+	'#e54535',
+	'#d17474',
+	'#5b1a4c',
+	'#5e95b7',
+	'#f7c97f',
+	'#233a22',
+	'#f9d4d4',
+	'#d60010',
+	'#936cff',
+	'#66290e',
+	'#376cb7',
+	'#517707',
+	'#9e1255'
+];
+
 const getBubbleByRegione = async () => {
 	const dataScuola = await getData.readDataCsv('oldData.csv');
 	const dataAlunni = await getData.readDataCsv('alunni.csv')
@@ -237,22 +259,49 @@ const getBubbleByRegione = async () => {
 
 	const resultScuole = getData.getNestedDataLength(dataScuola, 'REGIONE');
 
-	const result = [];
-	resultScuole.forEach((d) => {
+	const resultBubble = [];
+	resultScuole.forEach((d, index) => {
 		// result.push([
 		// 	d.value, popolazioneByRegione[d.key], resultAlunni[d.key],
 		// ]);
-		result.push(({
+		resultBubble.push(({
 			id: d.key,
 			data: [{
 				x: d.value,
 				y: popolazioneByRegione[d.key],
-				z: resultAlunni[d.key],
+				z: resultAlunni[d.key] || 0,
+				color: colorsRegione[index],
 			}],
 		}));
 	});
+	console.log(resultBubble);
+	computeData.saveJson(resultBubble, 'bubbleData');
 
-	console.log(result);
+	// const resultScatter = [{
+	// 	id: 'example',
+	// 	data: [],
+	// }];
+	// resultScuole.forEach((d) => {
+	// 	resultScatter[0].data.push(({
+	// 		x: d.value,
+	// 		y: d.key,
+	// 		z: resultAlunni[d.key] || 0,
+	// 	}));
+	// });
+	const resultScatter = [];
+	resultScuole.forEach((d, index) => {
+		resultScatter.push(({
+			id: d.key,
+			data: [{
+				x: d.value,
+				y: d.key,
+				z: resultAlunni[d.key] || 0,
+				color: colorsRegione[index],
+			}],
+		}));
+	});
+	console.log(resultScatter);
+	computeData.saveJson(resultScatter, 'scatterData');
 
 	let minValueAlunni = Number.MAX_VALUE;
 	let maxValueAlunni = Number.MIN_VALUE;
@@ -271,6 +320,8 @@ const getBubbleByRegione = async () => {
 		values: [minValueAlunni, maxValueAlunni],
 		sizes: [9, 32],
 	};
+
+	console.log(nodeSize);
 };
 
 commander
