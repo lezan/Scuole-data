@@ -270,7 +270,7 @@ const getBubbleByRegione = async () => {
 				x: d.value,
 				y: popolazioneByRegione[d.key],
 				z: resultAlunni[d.key] || 0,
-				color: colorsRegione[index],
+				color: resultAlunni[d.key] !== undefined ? colorsRegione[index] : "#a5a5a5",
 			}],
 		}));
 	});
@@ -296,7 +296,7 @@ const getBubbleByRegione = async () => {
 				x: d.value,
 				y: d.key,
 				z: resultAlunni[d.key] || 0,
-				color: colorsRegione[index],
+				color: resultAlunni[d.key] !== undefined ? colorsRegione[index] : "#a5a5a5",
 			}],
 		}));
 	});
