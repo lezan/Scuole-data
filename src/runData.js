@@ -212,8 +212,9 @@ const getOccurrencesScuolaByComuneInList = async () => {
 	comuneGeoJson.features.forEach((item) => {
 		occurrencesScuolaByComuneInList.forEach((d) => {
 			if (d.comune.toLowerCase() === item.properties.name.toLowerCase()) {
-				const value = mapCatName[Object.keys(d.values)[0]];
-				item.properties['nameScuola'] = value;
+				const value = Object.keys(d.values)[0];
+				item.properties['nameScuolaCat'] = mapCatName[value];
+				item.properties['nameScuola'] = value !== undefined ? doCamelCase(value) : '';
 			}
 		})
 	});
@@ -240,8 +241,9 @@ const getOccurrencesScuolaByProvinciaInList = async () => {
 	provinciaGeoJson.features.forEach((item) => {
 		occurrencesScuolaByProvinciaInList.forEach((d) => {
 			if (d.provincia.toLowerCase() === item.properties.prov_name.toLowerCase()) {
-				const value = mapCatName[Object.keys(d.values)[0]];
-				item.properties['nameScuola'] = value;
+				const value = Object.keys(d.values)[0];
+				item.properties['nameScuolaCat'] = mapCatName[value];
+				item.properties['nameScuola'] = value !== undefined ? doCamelCase(value) : '';
 			}
 		})
 	});
@@ -269,7 +271,7 @@ const getOccurrencesScuolaByRegioneInList = async () => {
 		occurrencesScuolaByRegioneInList.forEach((d) => {
 			if (d.regione.toLowerCase() === item.properties.reg_name.toLowerCase()) {
 				const value = Object.keys(d.values)[0];
-				item.properties['nameScuola'] = value;
+				item.properties['nameScuola'] = doCamelCase(value);
 			}
 		})
 	});
@@ -336,7 +338,7 @@ const getBubbleByRegione = async () => {
 		// 	d.value, popolazioneByRegione[d.key], resultAlunni[d.key],
 		// ]);
 		resultBubble.push(({
-			id: d.key,
+			id: doCamelCase(d.key),
 			data: [{
 				x: d.value,
 				y: popolazioneByRegione[d.key],
@@ -362,7 +364,7 @@ const getBubbleByRegione = async () => {
 	const resultScatter = [];
 	resultScuole.forEach((d, index) => {
 		resultScatter.push(({
-			id: d.key,
+			id: doCamelCase(d.key),
 			data: [{
 				x: d.value,
 				y: d.key,
@@ -393,6 +395,11 @@ const getBubbleByRegione = async () => {
 	};
 
 	console.log(nodeSize);
+};
+
+const doCamelCase = (item) => {
+	const result = item.slice(0, 1).toUpperCase() + item.slice(1).toUpperCase();
+	return result;
 };
 
 commander
