@@ -2,57 +2,65 @@ const getData = require('./getData.js');
 const computeData = require('./computeData.js');
 const commander = require('commander');
 
+// With allData because Alunni is not involved.
 const getDataByComune = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const dataComune = getData.getDataByComune(data);
 	computeData.saveData(dataComune, 'dataComune');
 };
 
+// With allData because Alunni is not involved.
 const getDataByProvincia = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const dataProvincia = getData.getDataByProvincia(data);
 	computeData.saveData(dataProvincia, 'dataProvincia');
 };
 
+// With allData because Alunni is not involved.
 const getDataByRegion = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const dataRegione = getData.getDataByRegione(data);
 	computeData.saveData(dataRegione, 'dataRegione');
 };
 
+// With allData because Alunni is not involved.
 const getOccurrencesIstituto = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesIstituto = getData.getMostFrequentNameIstituto(data);
 	computeData.saveJson(occurrencesIstituto, 'occurrencesIstituto');
 };
 
+// With allData because Alunni is not involved.
 const getOccurrencesScuola = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesScuola = getData.getMostFrequentNameScuola(data);
 	computeData.saveJson(occurrencesScuola, 'occurrencesScuola');
 };
 
+// With allData because Alunni is not involved.
 const getOccurrencesScuolaByComune = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesScuolaByComune = getData.getMostFrequentNameScuolaByComune(data);
 	computeData.saveJson(occurrencesScuolaByComune, 'occurrencesScuolaByComune');
 };
 
+// With allData because Alunni is not involved.
 const getOccurrencesScuolaByProvincia = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesScuolaByProvincia = getData.getMostFrequentNameScuolaByProvincia(data);
 	computeData.saveJson(occurrencesScuolaByProvincia, 'occurrencesScuolaByProvincia');
 };
 
+// With allData because Alunni is not involved.
 const getOccurrencesScuolaByRegione = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesScuolaByRegione = getData.getMostFrequentNameScuolaByRegione(data);
 	computeData.saveJson(occurrencesScuolaByRegione, 'occurrencesScuolaByRegione');
@@ -193,8 +201,9 @@ const listName = [
 	'vinci',
 ];
 
+// With allData because Alunni is not involved.
 const getOccurrencesScuolaByComuneInList = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesScuolaByComuneInList = getData.getFrequentNameScuolaByComuneInList(data, listName);
 	computeData.saveJson(occurrencesScuolaByComuneInList, 'occurrencesScuolaByComuneInList');
@@ -222,8 +231,9 @@ const getOccurrencesScuolaByComuneInList = async () => {
 	computeData.saveJson(comuneGeoJson, 'comuneNameScuola');
 };
 
+// With allData because Alunni is not involved.
 const getOccurrencesScuolaByProvinciaInList = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesScuolaByProvinciaInList = getData.getFrequentNameScuolaByProvinciaInList(data, listName);
 	computeData.saveJson(occurrencesScuolaByProvinciaInList, 'occurrencesScuolaByProvinciaInList');
@@ -251,8 +261,9 @@ const getOccurrencesScuolaByProvinciaInList = async () => {
 	computeData.saveJson(provinciaGeoJson, 'provinciaNameScuola');
 };
 
+// With allData because Alunni is not involved.
 const getOccurrencesScuolaByRegioneInList = async () => {
-	const data = await getData.readDataCsv('oldData.csv');
+	const data = await getData.readDataCsv('allData.csv');
 
 	const occurrencesScuolaByRegioneInList = getData.getFrequentNameScuolaByRegioneInList(data, listName);
 	computeData.saveJson(occurrencesScuolaByRegioneInList, 'occurrencesScuolaByRegioneInList');
@@ -324,6 +335,7 @@ const colorsRegione = ['#0b2852',
 	'#9e1255'
 ];
 
+// With oldData because Alunni is involved.
 const getBubbleByRegione = async () => {
 	const dataScuola = await getData.readDataCsv('oldData.csv');
 	const dataAlunni = await getData.readDataCsv('alunni.csv')
@@ -354,6 +366,7 @@ const getBubbleByRegione = async () => {
 	console.log(nodeSize);
 };
 
+// With oldData because Alunni is involved.
 const getScatterByRegione = async () => {
 	const dataScuola = await getData.readDataCsv('oldData.csv');
 	const dataAlunni = await getData.readDataCsv('alunni.csv')
