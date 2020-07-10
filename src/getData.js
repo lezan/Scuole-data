@@ -312,6 +312,20 @@ getNestedData = (data, group, key) => {
 	return dataNested;
 };
 
+getNestedDataLength = (data, group) => {
+	const dataNested = d3Collection.nest()
+			.key((d) => d[group])
+			.entries(data)
+			.map((d) => ({
+				key: d.key,
+				value: d.values.length,
+			}));
+
+	dataNested.sort((a, b) => a.key.localeCompare(b.key));
+
+	return dataNested;
+};
+
 sortOccurrencesByValue = (occurrences) => {
 	const entries = Object.entries(occurrences);
 	const sorted = entries.sort((a, b) => b[1] - a[1]);

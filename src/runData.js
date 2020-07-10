@@ -1,7 +1,6 @@
 const getData = require('./getData.js');
 const computeData = require('./computeData.js');
 const commander = require('commander');
-const { option } = require('commander');
 
 const getDataByComune = async () => {
 	const data = await getData.readDataCsv('oldData.csv');
@@ -59,10 +58,81 @@ const getOccurrencesScuolaByRegione = async () => {
 	computeData.saveJson(occurrencesScuolaByRegione, 'occurrencesScuolaByRegione');
 };
 
+const catName = [
+	'Politici',
+	'Religiosi',
+	'Letterati',
+	'Scienziati',
+	'Artisti',
+	'Altro'
+];
+
+const mapCatName = {
+	'alfieri': 'Letterati',
+	'alighieri': 'Letterati',
+	'amicis': 'Letterati',
+	'archimede': 'Scienziati',
+	'azeglio': 'Politici',
+	'berlinguer': 'Politici',
+	'borsellino': 'Altro',
+	'bosco': 'Religiosi',
+	'bruno': 'Letterati',
+	'carducci': 'Letterati',
+	'cavour': 'Politici',
+	'collodi': 'Letterati',
+	'crispi': 'Politici',
+	"d'annunzio": 'Letterati',
+	"d'aquino": 'Letterati',
+	'diaz': 'Politici',
+	'einaudi': 'Letterati',
+	'einstein': 'Scienziati',
+	'falcone': 'Altro',
+	'fermi': 'Scienziati',
+	'foscolo': 'Letterati',
+	'galilei': 'Scienziati',
+	'garibaldi': 'Politici',
+	'gasperi': 'Politici',
+	'gennaro': 'Religiosi',
+	'giotto': 'Artisti',
+	'gramsci': 'Politici',
+	'guttuso': 'Artisti',
+	'leopardi': 'Letterati',
+	'majorana': 'Scienziati',
+	'mameli': 'Artisti',
+	'manzoni': 'Letterati',
+	'marconi': 'Scienziati',
+	'matteotti': 'Politici',
+	'mazzini': 'Politici',
+	'meli': 'Letterati',
+	'milani': 'Religiosi',
+	'montalcini': 'Scienziati',
+	'montessori': 'Letterati',
+	'moro': 'Politici',
+	'pascal': 'Scienziati',
+	'pascoli': 'Letterati',
+	'pasolini': 'Letterati',
+	'pellico': 'Letterati',
+	'pertini': 'Politici',
+	'petrarca': 'Letterati',
+	'pirandello': 'Letterati',
+	'pitagora': 'Scienziati',
+	'platone': 'Letterati',
+	'plinio': 'Letterati',
+	'quasimodo': 'Letterati',
+	'rodari': 'Letterati',
+	'salvemini': 'Politici',
+	'sciascia': 'Letterati',
+	'sturzo': 'Politici',
+	'tasso': 'Letterati',
+	'umberto': 'Politici',
+	'verdi': 'Letterati',
+	'verga': 'Letterati',
+	'vinci': 'Scienziati',
+};
+
 const listName = [
 	'alfieri',
 	'alighieri',
-	'almeyda',
 	'amicis',
 	'archimede',
 	'azeglio',
@@ -78,6 +148,7 @@ const listName = [
 	"d'aquino",
 	'diaz',
 	'einaudi',
+	'einstein',
 	'falcone',
 	'fermi',
 	'foscolo',
@@ -119,7 +190,7 @@ const listName = [
 	'umberto',
 	'verdi',
 	'verga',
-	'vinci'
+	'vinci',
 ];
 
 const getOccurrencesScuolaByComuneInList = async () => {
@@ -141,7 +212,7 @@ const getOccurrencesScuolaByComuneInList = async () => {
 	comuneGeoJson.features.forEach((item) => {
 		occurrencesScuolaByComuneInList.forEach((d) => {
 			if (d.comune.toLowerCase() === item.properties.name.toLowerCase()) {
-				const value = Object.keys(d.values)[0];
+				const value = mapCatName[Object.keys(d.values)[0]];
 				item.properties['nameScuola'] = value;
 			}
 		})
@@ -169,7 +240,7 @@ const getOccurrencesScuolaByProvinciaInList = async () => {
 	provinciaGeoJson.features.forEach((item) => {
 		occurrencesScuolaByProvinciaInList.forEach((d) => {
 			if (d.provincia.toLowerCase() === item.properties.prov_name.toLowerCase()) {
-				const value = Object.keys(d.values)[0];
+				const value = mapCatName[Object.keys(d.values)[0]];
 				item.properties['nameScuola'] = value;
 			}
 		})
@@ -405,4 +476,6 @@ if (commander.all) {
 	getOccurrencesScuolaByComuneInList();
 	getOccurrencesScuolaByProvinciaInList();
 	getOccurrencesScuolaByRegioneInList();
+
+	getBubbleByRegione();
 }
