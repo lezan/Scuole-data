@@ -350,24 +350,25 @@ const getBubbleByRegione = async () => {
 	console.log(resultBubble);
 	computeData.saveJson(resultBubble, 'bubbleData');
 
-	// const resultScatter = [{
-	// 	id: 'example',
-	// 	data: [],
-	// }];
-	// resultScuole.forEach((d) => {
-	// 	resultScatter[0].data.push(({
-	// 		x: d.value,
-	// 		y: d.key,
-	// 		z: resultAlunni[d.key] || 0,
-	// 	}));
-	// });
+	const nodeSize = getNodeSize(resultAlunni);
+	console.log(nodeSize);
+};
+
+const getScatterByRegione = async () => {
+	const dataScuola = await getData.readDataCsv('oldData.csv');
+	const dataAlunni = await getData.readDataCsv('alunni.csv')
+
+	const resultAlunni = getData.getAlunniScuolaByRegione(dataScuola, dataAlunni);
+
+	const resultScuole = getData.getNestedDataLength(dataScuola, 'REGIONE');
+
 	const resultScatter = [];
 	resultScuole.forEach((d, index) => {
 		resultScatter.push(({
 			id: doCamelCase(d.key),
 			data: [{
 				x: d.value,
-				y: d.key,
+				y: doCamelCase(d.key),
 				z: resultAlunni[d.key] || 0,
 				color: resultAlunni[d.key] !== undefined ? colorsRegione[index] : "#a5a5a5",
 			}],
@@ -376,25 +377,30 @@ const getBubbleByRegione = async () => {
 	console.log(resultScatter);
 	computeData.saveJson(resultScatter, 'scatterData');
 
-	let minValueAlunni = Number.MAX_VALUE;
-	let maxValueAlunni = Number.MIN_VALUE;
-	Object.values(resultAlunni).forEach((d) => {
-		if (d < minValueAlunni) {
-			minValueAlunni = d;
+	const nodeSize = getNodeSize(resultAlunni);
+	console.log(nodeSize);
+};
+
+const getNodeSize = (data) => {
+	let minValue = Number.MAX_VALUE;
+	let maxValue = Number.MIN_VALUE;
+	Object.values(data).forEach((d) => {
+		if (d < minValue) {
+			minValue = d;
 		}
 
-		if (d > maxValueAlunni) {
-			maxValueAlunni = d;
+		if (d > maxValue) {
+			maxValue = d;
 		}
 	});
 
 	const nodeSize = {
 		key: 'z',
-		values: [minValueAlunni, maxValueAlunni],
+		values: [minValue, maxValue],
 		sizes: [9, 32],
 	};
 
-	console.log(nodeSize);
+	return nodeSize;
 };
 
 const doCamelCase = (item) => {
@@ -417,6 +423,7 @@ commander
 	.option('-gospl, --getOccurrencesScuolaByProvinciaInList', 'Get occurrences scuola by provincia in list')
 	.option('-gosrl, --getOccurrencesScuolaByRegioneInList', 'Get occurrences scuola by regione in list')
 	.option('-gbr, --getBubbleByRegione', 'Get data by regione for bubble')
+	.option('-gsr, --getScatterByRegione', 'Get data by regione for scatter')
 	.option('-a --all', 'Do all')
 	.parse(process.argv);
 
@@ -468,6 +475,10 @@ if (commander.getBubbleByRegione) {
 	getBubbleByRegione();
 }
 
+if (commander.getScatterByRegione) {
+	getScatterByRegione();
+}
+
 if (commander.all) {
 	getDataByComune();
 	getDataByProvincia();
@@ -485,4 +496,5 @@ if (commander.all) {
 	getOccurrencesScuolaByRegioneInList();
 
 	getBubbleByRegione();
+	getScatterByRegione();
 }
