@@ -398,7 +398,7 @@ const getBubbleByRegione = async () => {
 };
 
 const doCamelCase = (item) => {
-	const result = item.slice(0, 1).toUpperCase() + item.slice(1).toUpperCase();
+	const result = item.slice(0, 1).toUpperCase() + item.slice(1).toLowerCase();
 	return result;
 };
 
