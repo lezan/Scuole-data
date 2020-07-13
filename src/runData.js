@@ -338,11 +338,11 @@ const getFlowerScuolaByComuneInList = async () => {
 	const result = [];
 	occurrencesScuolaByComuneInList.forEach((d, index) => {
 		const el = {
-			key: d.comune,
+			key: doCamelCase(d.comune),
 			data: Object.entries(d.values).map(([key, value]) => ({
-				name: key,
-				value: doCamelCase(value),
-			})).slice(0, 5),
+				name: doCamelCase(key),
+				value,
+			})).slice(0, 10),
 			color: colorsRegione[index],
 		};
 
@@ -358,11 +358,11 @@ const getFlowerScuolaByProvinciaInList = async () => {
 	const result = [];
 	occurrencesScuolaByProvinciaInList.forEach((d, index) => {
 		const el = {
-			key: d.provincia,
+			key: doCamelCase(d.provincia),
 			data: Object.entries(d.values).map(([key, value]) => ({
-				name: key,
-				value: doCamelCase(value),
-			})).slice(0, 5),
+				name: doCamelCase(key),
+				value,
+			})).slice(0, 10),
 			color: colorsRegione[index],
 		};
 
@@ -378,11 +378,11 @@ const getFlowerScuolaByRegioneInList = async () => {
 	const result = [];
 	occurrencesScuolaByRegioneInList.forEach((d, index) => {
 		const el = {
-			key: d.regione,
+			key: doCamelCase(d.regione),
 			data: Object.entries(d.values).map(([key, value]) => ({
-				name: key,
-				value: doCamelCase(value),
-			})).slice(0, 5),
+				name: doCamelCase(key),
+				value,
+			})).slice(0, 10),
 			color: colorsRegione[index],
 		};
 
