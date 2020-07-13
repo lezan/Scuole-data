@@ -217,18 +217,7 @@ const getOccurrencesScuolaByComuneInList = async () => {
 	console.log(comuneNameSet);
 	console.log('-------------------');
 
-	const comuneGeoJson = await getData.readDataGeoJson('limits_IT_municipalities.geojson');
-	comuneGeoJson.features.forEach((item) => {
-		occurrencesScuolaByComuneInList.forEach((d) => {
-			if (d.comune.toLowerCase() === item.properties.name.toLowerCase()) {
-				const value = Object.keys(d.values)[0];
-				item.properties['nameScuolaCat'] = mapCatName[value];
-				item.properties['nameScuola'] = value !== undefined ? doCamelCase(value) : '';
-			}
-		})
-	});
-
-	computeData.saveJson(comuneGeoJson, 'comuneNameScuola');
+	return occurrencesScuolaByComuneInList;
 };
 
 // With allData because Alunni is not involved.
@@ -247,18 +236,7 @@ const getOccurrencesScuolaByProvinciaInList = async () => {
 	console.log(provinciaNameSet);
 	console.log('-------------------');
 
-	const provinciaGeoJson = await getData.readDataGeoJson('limits_IT_provinces.geojson');
-	provinciaGeoJson.features.forEach((item) => {
-		occurrencesScuolaByProvinciaInList.forEach((d) => {
-			if (d.provincia.toLowerCase() === item.properties.prov_name.toLowerCase()) {
-				const value = Object.keys(d.values)[0];
-				item.properties['nameScuolaCat'] = mapCatName[value];
-				item.properties['nameScuola'] = value !== undefined ? doCamelCase(value) : '';
-			}
-		})
-	});
-
-	computeData.saveJson(provinciaGeoJson, 'provinciaNameScuola');
+	return occurrencesScuolaByProvinciaInList;
 };
 
 // With allData because Alunni is not involved.
@@ -277,6 +255,48 @@ const getOccurrencesScuolaByRegioneInList = async () => {
 	console.log(regioneNameSet);
 	console.log('-------------------');
 
+	return occurrencesScuolaByRegioneInList;
+};
+
+// With allData because Alunni is not involved.
+const getNameScuolaByComuneInList = async () => {
+	const occurrencesScuolaByComuneInList = await getOccurrencesScuolaByComuneInList();
+	const comuneGeoJson = await getData.readDataGeoJson('limits_IT_municipalities.geojson');
+	comuneGeoJson.features.forEach((item) => {
+		occurrencesScuolaByComuneInList.forEach((d) => {
+			if (d.comune.toLowerCase() === item.properties.name.toLowerCase()) {
+				const value = Object.keys(d.values)[0];
+				item.properties['nameScuolaCat'] = mapCatName[value];
+				item.properties['nameScuola'] = value !== undefined ? doCamelCase(value) : '';
+			}
+		})
+	});
+
+	computeData.saveJson(comuneGeoJson, 'comuneNameScuola');
+};
+
+// With allData because Alunni is not involved.
+const getNameScuolaByProvinciaInList = async () => {
+	const occurrencesScuolaByProvinciaInList = await getOccurrencesScuolaByProvinciaInList();
+
+	const provinciaGeoJson = await getData.readDataGeoJson('limits_IT_provinces.geojson');
+	provinciaGeoJson.features.forEach((item) => {
+		occurrencesScuolaByProvinciaInList.forEach((d) => {
+			if (d.provincia.toLowerCase() === item.properties.prov_name.toLowerCase()) {
+				const value = Object.keys(d.values)[0];
+				item.properties['nameScuolaCat'] = mapCatName[value];
+				item.properties['nameScuola'] = value !== undefined ? doCamelCase(value) : '';
+			}
+		})
+	});
+
+	computeData.saveJson(provinciaGeoJson, 'provinciaNameScuola');
+};
+
+// With allData because Alunni is not involved.
+const getNameScuolaByRegioneInList = async () => {
+	const occurrencesScuolaByRegioneInList = await getOccurrencesScuolaByRegioneInList();
+
 	const regioneGeoJson = await getData.readDataGeoJson('limits_IT_regions.geojson');
 	regioneGeoJson.features.forEach((item) => {
 		occurrencesScuolaByRegioneInList.forEach((d) => {
@@ -288,6 +308,87 @@ const getOccurrencesScuolaByRegioneInList = async () => {
 	});
 
 	computeData.saveJson(regioneGeoJson, 'regioneNameScuola');
+};
+
+const colorsRegione = ['#0b2852',
+	'#087c58',
+	'#fc6600',
+	'#b6e3ff',
+	'#e58d23',
+	'#88c46c',
+	'#31999b',
+	'#e54535',
+	'#d17474',
+	'#5b1a4c',
+	'#5e95b7',
+	'#f7c97f',
+	'#233a22',
+	'#f9d4d4',
+	'#d60010',
+	'#936cff',
+	'#66290e',
+	'#376cb7',
+	'#517707',
+	'#9e1255'
+];
+
+const getFlowerScuolaByComuneInList = async () => {
+	const occurrencesScuolaByComuneInList = await getOccurrencesScuolaByComuneInList();
+
+	const result = [];
+	occurrencesScuolaByComuneInList.forEach((d, index) => {
+		const el = {
+			key: d.comune,
+			data: Object.entries(d.values).map(([key, value]) => ({
+				name: key,
+				value: doCamelCase(value),
+			})).slice(0, 5),
+			color: colorsRegione[index],
+		};
+
+		result.push(el);
+	});
+
+	computeData.saveJson(result, 'dataFlowerComune');
+};
+
+const getFlowerScuolaByProvinciaInList = async () => {
+	const occurrencesScuolaByProvinciaInList = await getOccurrencesScuolaByProvinciaInList();
+
+	const result = [];
+	occurrencesScuolaByProvinciaInList.forEach((d, index) => {
+		const el = {
+			key: d.provincia,
+			data: Object.entries(d.values).map(([key, value]) => ({
+				name: key,
+				value: doCamelCase(value),
+			})).slice(0, 5),
+			color: colorsRegione[index],
+		};
+
+		result.push(el);
+	});
+
+	computeData.saveJson(result, 'dataFlowerProvincia');
+};
+
+const getFlowerScuolaByRegioneInList = async () => {
+	const occurrencesScuolaByRegioneInList = await getOccurrencesScuolaByRegioneInList();
+
+	const result = [];
+	occurrencesScuolaByRegioneInList.forEach((d, index) => {
+		const el = {
+			key: d.regione,
+			data: Object.entries(d.values).map(([key, value]) => ({
+				name: key,
+				value: doCamelCase(value),
+			})).slice(0, 5),
+			color: colorsRegione[index],
+		};
+
+		result.push(el);
+	});
+	computeData.saveJson(result, 'dataFlowerRegione');
 };
 
 const popolazioneByRegione = {
@@ -312,28 +413,6 @@ const popolazioneByRegione = {
 	MOLISE: 310449,
 	"VALLE D'AOSTA": 126883,
 };
-
-const colorsRegione = ['#0b2852',
-	'#087c58',
-	'#fc6600',
-	'#b6e3ff',
-	'#e58d23',
-	'#88c46c',
-	'#31999b',
-	'#e54535',
-	'#d17474',
-	'#5b1a4c',
-	'#5e95b7',
-	'#f7c97f',
-	'#233a22',
-	'#f9d4d4',
-	'#d60010',
-	'#936cff',
-	'#66290e',
-	'#376cb7',
-	'#517707',
-	'#9e1255'
-];
 
 // With oldData because Alunni is involved.
 const getBubbleByRegione = async () => {
@@ -432,11 +511,14 @@ commander
 	.option('-gosc, --getOccurrencesScuolaByComune', 'Get occurrences scuola by comune')
 	.option('-gosp, --getOccurrencesScuolaByProvincia', 'Get occurrences scuola by provincia')
 	.option('-gosr, --getOccurrencesScuolaByRegione', 'Get occurrences scuola by regione')
-	.option('-goscl, --getOccurrencesScuolaByComuneInList', 'Get occurrences scuola by comune in list')
-	.option('-gospl, --getOccurrencesScuolaByProvinciaInList', 'Get occurrences scuola by provincia in list')
-	.option('-gosrl, --getOccurrencesScuolaByRegioneInList', 'Get occurrences scuola by regione in list')
+	.option('-gnscl, --getNameScuolaByComuneInList', 'Get occurrences scuola by comune in list')
+	.option('-gnspl, --getNameScuolaByProvinciaInList', 'Get occurrences scuola by provincia in list')
+	.option('-gnsrl, --getNameScuolaByRegioneInList', 'Get occurrences scuola by regione in list')
 	.option('-gbr, --getBubbleByRegione', 'Get data by regione for bubble')
 	.option('-gsr, --getScatterByRegione', 'Get data by regione for scatter')
+	.option('-gfscl, --getFlowerScuolaByComuneInList', 'Get occurrences in list scuola by comune for flower')
+	.option('-gfspl, --getFlowerScuolaByProvinciaInList', 'Get occurrences in list scuola by provincia for flower')
+	.option('-gfsel, --getFlowerScuolaByRegioneInList', 'Get occurrences in list scuola by regione for flower')
 	.option('-a --all', 'Do all')
 	.parse(process.argv);
 
@@ -472,16 +554,16 @@ if (commander.getOccurrencesScuolaByRegione) {
 	getOccurrencesScuolaByRegione();
 }
 
-if (commander.getOccurrencesScuolaByComuneInList) {
-	getOccurrencesScuolaByComuneInList();
+if (commander.getNameScuolaByComuneInList) {
+	getNameScuolaByComuneInList();
 }
 
-if (commander.getOccurrencesScuolaByProvinciaInList) {
-	getOccurrencesScuolaByProvinciaInList();
+if (commander.getNameScuolaByProvinciaInList) {
+	getNameScuolaByProvinciaInList();
 }
 
-if (commander.getOccurrencesScuolaByRegioneInList) {
-	getOccurrencesScuolaByRegioneInList();
+if (commander.getNameScuolaByRegioneInList) {
+	getNameScuolaByRegioneInList();
 }
 
 if (commander.getBubbleByRegione) {
@@ -490,6 +572,18 @@ if (commander.getBubbleByRegione) {
 
 if (commander.getScatterByRegione) {
 	getScatterByRegione();
+}
+
+if (commander.getFlowerScuolaByComuneInList) {
+	getFlowerScuolaByComuneInList();
+}
+
+if (commander.getFlowerScuolaByProvinciaInList) {
+	getFlowerScuolaByProvinciaInList();
+}
+
+if (commander.getFlowerScuolaByRegioneInList) {
+	getFlowerScuolaByRegioneInList();
 }
 
 if (commander.all) {
@@ -504,10 +598,14 @@ if (commander.all) {
 	getOccurrencesScuolaByProvincia();
 	getOccurrencesScuolaByRegione();
 
-	getOccurrencesScuolaByComuneInList();
-	getOccurrencesScuolaByProvinciaInList();
-	getOccurrencesScuolaByRegioneInList();
+	getNameScuolaByComuneInList();
+	getNameScuolaByProvinciaInList();
+	getNameScuolaByRegioneInList();
 
 	getBubbleByRegione();
 	getScatterByRegione();
+
+	getFlowerScuolaByComuneInList();
+	getFlowerScuolaByProvinciaInList();
+	getFlowerScuolaByRegioneInList();
 }
