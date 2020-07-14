@@ -144,6 +144,34 @@ module.exports = {
 
 		return result;
 	},
+
+	getAlunniOrdineByRegione: (dataScuola, dataAlunni) => {
+		const mapScuolaGroup = {};
+		dataScuola.forEach((d) => {
+			mapScuolaGroup[d.CODICESCUOLA] = d.REGIONE;
+		});
+
+		const result = {};
+		dataAlunni.forEach((item) => {
+			const codiceScuola = item.CODICESCUOLA;
+			const numeroAlunni = Number(item.ALUNNI);
+			const ordine = item.ORDINESCUOLA;
+
+			const index = mapScuolaGroup[codiceScuola];
+
+			if (result[index] !== undefined) {
+				if (result[index][ordine] !== undefined) {
+					result[index][ordine] += numeroAlunni;
+				} else {
+					result[index][ordine] = numeroAlunni;
+				}
+			} else {
+				result[index] = {[ordine]: numeroAlunni};
+			}
+		});
+
+		return result;
+	},
 };
 
 checkWord = (word, string) => {
@@ -276,26 +304,26 @@ getFrequentNameInList = (data, listName, type, group, key) => {
 
 getAlunniScuolaByGroup = (dataScuola, dataAlunni, group) => {
 	const mapScuolaGroup = {};
-		dataScuola.forEach((d) => {
-			mapScuolaGroup[d.CODICESCUOLA] = d[group];
-		});
+	dataScuola.forEach((d) => {
+		mapScuolaGroup[d.CODICESCUOLA] = d[group];
+	});
 
-		const result = {};
+	const result = {};
 
-		dataAlunni.forEach((item) => {
-			const codiceScuola = item.CODICESCUOLA;
-			const numeroAlunni = Number(item.ALUNNI);
+	dataAlunni.forEach((item) => {
+		const codiceScuola = item.CODICESCUOLA;
+		const numeroAlunni = Number(item.ALUNNI);
 
-			const index = mapScuolaGroup[codiceScuola];
+		const index = mapScuolaGroup[codiceScuola];
 
-			if (result[index] !== undefined) {
-				result[index] += numeroAlunni;
-			} else {
-				result[index] = numeroAlunni;
-			}
-		});
+		if (result[index] !== undefined) {
+			result[index] += numeroAlunni;
+		} else {
+			result[index] = numeroAlunni;
+		}
+	});
 
-		return result;
+	return result;
 };
 
 getNestedData = (data, group, key) => {
