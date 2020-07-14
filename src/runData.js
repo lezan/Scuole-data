@@ -448,7 +448,7 @@ const getBubbleByRegione = async () => {
 // With oldData because Alunni is involved.
 const getScatterByRegione = async () => {
 	const dataScuola = await getData.readDataCsv('oldData.csv');
-	const dataAlunni = await getData.readDataCsv('alunni.csv')
+	const dataAlunni = await getData.readDataCsv('alunni.csv');
 
 	const resultAlunni = getData.getAlunniScuolaByRegione(dataScuola, dataAlunni);
 
@@ -471,6 +471,15 @@ const getScatterByRegione = async () => {
 
 	const nodeSize = getNodeSize(resultAlunni);
 	console.log(nodeSize);
+};
+
+// With oldData because Alunni is involved.
+const getRadarAlunniByRegione = async () => {
+	const dataScuola = await getData.readDataCsv('oldData.csv');
+	const dataAlunni = await getData.readDataCsv('alunni.csv');
+
+	const result = getData.getAlunniOrdineByRegione(dataScuola, dataAlunni);
+	computeData.saveJson(result, 'testRadar');
 };
 
 const getNodeSize = (data) => {
@@ -519,6 +528,7 @@ commander
 	.option('-gfscl, --getFlowerScuolaByComuneInList', 'Get occurrences in list scuola by comune for flower')
 	.option('-gfspl, --getFlowerScuolaByProvinciaInList', 'Get occurrences in list scuola by provincia for flower')
 	.option('-gfsel, --getFlowerScuolaByRegioneInList', 'Get occurrences in list scuola by regione for flower')
+	.option('-grar, --getRadarAlunniByRegione', 'Test')
 	.option('-a --all', 'Do all')
 	.parse(process.argv);
 
@@ -584,6 +594,10 @@ if (commander.getFlowerScuolaByProvinciaInList) {
 
 if (commander.getFlowerScuolaByRegioneInList) {
 	getFlowerScuolaByRegioneInList();
+}
+
+if (commander.getRadarAlunniByRegione) {
+	getRadarAlunniByRegione();
 }
 
 if (commander.all) {
