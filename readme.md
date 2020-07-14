@@ -19,6 +19,10 @@
 - Choropleth per comune:
 	* Colorare la provincia in base al nome più frequente (solo il più frequente);
 	* Gli elementi sono troppi (circa 32) meglio passare alle categorie di nomi (politici, religiosi...).
+- Flower per regione:
+	* Visualizzare i primi nomi di ogni regione per numero di occorrenze nel nome della scuola.
+	* Per province e comuni è impossibile, ci può concentrare solo su una determinata regione (per le province) e qualcosa di simile per i comuni.
+- 
 
 ## Cambiamenti al dataset
 
