@@ -147,17 +147,23 @@ module.exports = {
 
 	getAlunniOrdineByRegione: (dataScuola, dataAlunni) => {
 		const mapScuolaGroup = {};
+		const mapScuolaGroupDetails = {};
 		dataScuola.forEach((d) => {
 			mapScuolaGroup[d.CODICESCUOLA] = d.REGIONE;
+			mapScuolaGroupDetails[d.CODICESCUOLA] = {regione: d.REGIONE, type: d.DESCRIZIONETIPOLOGIAGRADOISTRUZIONESCUOLA};
 		});
 
 		const result = {};
+		const resultDetails = {};
 		dataAlunni.forEach((item) => {
 			const codiceScuola = item.CODICESCUOLA;
 			const numeroAlunni = Number(item.ALUNNI);
-			const ordine = item.ORDINESCUOLA;
 
 			const index = mapScuolaGroup[codiceScuola];
+			const ordine = item.ORDINESCUOLA;
+
+			const indexDetails = mapScuolaGroupDetails[codiceScuola].regione;
+			const ordineDetails = mapScuolaGroupDetails[codiceScuola].type;
 
 			if (result[index] !== undefined) {
 				if (result[index][ordine] !== undefined) {
@@ -168,9 +174,24 @@ module.exports = {
 			} else {
 				result[index] = {[ordine]: numeroAlunni};
 			}
+
+			if (resultDetails[indexDetails] !== undefined) {
+				if (resultDetails[indexDetails][ordineDetails] !== undefined) {
+					resultDetails[indexDetails][ordineDetails] += numeroAlunni;
+				} else {
+					resultDetails[indexDetails][ordineDetails] = numeroAlunni;
+				}
+			} else {
+				resultDetails[indexDetails] = {[ordineDetails]: numeroAlunni};
+			}
 		});
 
-		return result;
+		const element = {
+			normal: result,
+			details: resultDetails,
+		};
+
+		return element;
 	},
 };
 

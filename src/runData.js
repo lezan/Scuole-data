@@ -479,7 +479,8 @@ const getRadarAlunniByRegione = async () => {
 	const dataAlunni = await getData.readDataCsv('alunni.csv');
 
 	const result = getData.getAlunniOrdineByRegione(dataScuola, dataAlunni);
-	computeData.saveJson(result, 'testRadar');
+	computeData.saveJson(result.normal, 'dataRadarRegione');
+	computeData.saveJson(result.details, 'dataDetailsRadarRegione');
 };
 
 const getNodeSize = (data) => {
