@@ -481,7 +481,28 @@ const getRadarAlunniByRegione = async () => {
 	const dataAlunni = await getData.readDataCsv('alunni.csv');
 
 	const result = getData.getAlunniOrdineByRegione(dataScuola, dataAlunni);
-	computeData.saveJson(result.normal, 'dataRadarRegione');
+	const normal = {};
+	Object.entries(result.normal).forEach(([key, value]) => {
+		const element = [];
+		const el1 = {
+			key: Object.keys(value)[0],
+			[key]: Object.values(value)[0],
+		};
+		const el2 = {
+			key: Object.keys(value)[1],
+			[key]: Object.values(value)[1],
+		};
+		const el3 = {
+			key: Object.keys(value)[2],
+			[key]: Object.values(value)[2],
+		};
+		element.push(el1);
+		element.push(el2);
+		element.push(el3);
+
+		normal[key] = element;
+	});
+	computeData.saveJson(normal, 'dataRadarRegione');
 	computeData.saveJson(result.details, 'dataDetailsRadarRegione');
 };
 
