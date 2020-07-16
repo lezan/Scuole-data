@@ -78,6 +78,7 @@ const catName = [
 const mapCatName = {
 	'alfieri': 'Letterati',
 	'alighieri': 'Letterati',
+	'allende': 'Politici',
 	'amicis': 'Letterati',
 	'archimede': 'Scienziati',
 	'azeglio': 'Politici',
@@ -141,6 +142,7 @@ const mapCatName = {
 const listName = [
 	'alfieri',
 	'alighieri',
+	'allende',
 	'amicis',
 	'archimede',
 	'azeglio',
@@ -623,4 +625,6 @@ if (commander.all) {
 	getFlowerScuolaByComuneInList();
 	getFlowerScuolaByProvinciaInList();
 	getFlowerScuolaByRegioneInList();
+
+	getRadarAlunniByRegione();
 }
