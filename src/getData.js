@@ -187,8 +187,8 @@ module.exports = {
 		});
 
 		const element = {
-			normal: result,
-			details: resultDetails,
+			normal: Object.keys(result).sort().reduce((r, k) => (r[k] = result[k], r), {}),
+			details: Object.keys(resultDetails).sort().reduce((r, k) => (r[k] = resultDetails[k], r), {}),
 		};
 
 		return element;

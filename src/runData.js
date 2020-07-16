@@ -212,7 +212,7 @@ const getOccurrencesScuolaByComuneInList = async () => {
 
 	const comuneNameSet = new Set();
 	occurrencesScuolaByComuneInList.forEach((d) => {
-		const value = Object.keys(d.values)[0]
+		const value = Object.keys(d.values)[0];
 		comuneNameSet.add(value);
 	});
 	console.log('Comune');
@@ -231,7 +231,7 @@ const getOccurrencesScuolaByProvinciaInList = async () => {
 
 	const provinciaNameSet = new Set();
 	occurrencesScuolaByProvinciaInList.forEach((d) => {
-		const value = Object.keys(d.values)[0]
+		const value = Object.keys(d.values)[0];
 		provinciaNameSet.add(value);
 	});
 	console.log('Provincia');
@@ -250,7 +250,7 @@ const getOccurrencesScuolaByRegioneInList = async () => {
 
 	const regioneNameSet = new Set();
 	occurrencesScuolaByRegioneInList.forEach((d) => {
-		const value = Object.keys(d.values)[0]
+		const value = Object.keys(d.values)[0];
 		regioneNameSet.add(value);
 	});
 	console.log('Regione');
