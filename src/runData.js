@@ -503,7 +503,28 @@ const getRadarAlunniByRegione = async () => {
 		normal[key] = element;
 	});
 	computeData.saveJson(normal, 'dataRadarRegione');
-	computeData.saveJson(result.details, 'dataDetailsRadarRegione');
+
+	const details = {};
+	Object.entries(result.details).forEach(([key1, value1]) => {
+		const element = {
+			xCategories: Object.keys(value1),
+			values: Object.values(value1),
+			yMin: 0,
+			yMax: Math.max(...Object.values(value1)),
+			data: Object.entries(value1).map(([key2, value2], index) => ({
+				x: index,
+				y: value2,
+				color: colorsRegione[index],
+				connectorColor: colorsRegione[index],
+				name: key2,
+			})),
+		};
+
+		details[key1] = element;
+	});
+
+	computeData.saveJson(details, 'dataDetailsRadarRegione');
+	// computeData.saveJson(result.details, 'testtttt');
 };
 
 const getNodeSize = (data) => {
