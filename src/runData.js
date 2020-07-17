@@ -505,17 +505,17 @@ const getRadarAlunniByRegione = async () => {
 	computeData.saveJson(normal, 'dataRadarRegione');
 
 	const details = {};
-	Object.entries(result.details).forEach(([key1, value1]) => {
+	Object.entries(result.details).forEach(([key1, value1], index1) => {
 		const element = {
 			xCategories: Object.keys(value1),
 			values: Object.values(value1),
 			yMin: 0,
 			yMax: Math.max(...Object.values(value1)),
-			data: Object.entries(value1).map(([key2, value2], index) => ({
-				x: index,
+			data: Object.entries(value1).map(([key2, value2], index2) => ({
+				x: index2,
 				y: value2,
-				color: colorsRegione[index],
-				connectorColor: colorsRegione[index],
+				color: colorsRegione[index1],
+				connectorColor: colorsRegione[index1],
 				name: key2,
 			})),
 		};
