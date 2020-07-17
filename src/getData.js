@@ -186,9 +186,17 @@ module.exports = {
 			}
 		});
 
+		const normal = Object.keys(result).sort().reduce((r, k) => (r[k] = result[k], r), {});
+		const detailsTemp = Object.keys(resultDetails).sort().reduce((r, k) => (r[k] = resultDetails[k], r), {});
+		const details = {};
+		Object.entries(detailsTemp).forEach(([key, value]) => {
+			const el = Object.fromEntries(Object.entries(value).sort((a, b) => b[1] - a[1]));
+			details[key] = el;
+		});
+
 		const element = {
-			normal: Object.keys(result).sort().reduce((r, k) => (r[k] = result[k], r), {}),
-			details: Object.keys(resultDetails).sort().reduce((r, k) => (r[k] = resultDetails[k], r), {}),
+			normal,
+			details,
 		};
 
 		return element;

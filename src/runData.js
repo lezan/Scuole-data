@@ -521,6 +521,7 @@ const getRadarAlunniByRegione = async () => {
 	const dataAlunni = await getData.readDataCsv('alunni.csv');
 
 	const result = getData.getAlunniOrdineByRegione(dataScuola, dataAlunni);
+
 	const normal = {};
 	Object.entries(result.normal).forEach(([key, value]) => {
 		const element = Object.entries(value).map((d) => ({
@@ -530,13 +531,13 @@ const getRadarAlunniByRegione = async () => {
 
 		normal[doCamelCase(key)] = element;
 	});
+
 	computeData.saveJson(normal, 'dataRadarRegione');
 
 	const details = {};
 	Object.entries(result.details).forEach(([key1, value1], index1) => {
 		const element = {
 			xCategories: Object.keys(value1).map((d) => mapOrdineDetailsScuola[d]),
-			values: Object.values(value1),
 			yMin: 0,
 			yMax: Math.max(...Object.values(value1)),
 			data: Object.entries(value1).map(([key2, value2], index2) => ({
