@@ -33,6 +33,7 @@
 	* Provincia FORLI'-CESENA -> FORLI-CESENA.
 	* Provincia PESARO E URBINO -> PESARO-URBINO.
 	* Provincia MONZA E DELLA BRIANZA -> MONZA-BRIANZA.
+	* Ordine scuola IST PROF PER I SERVIZI COMM TUR E DELLA PUBB -> IST PROF PER I SERVIZI COMMERCIALI E TURISTICI
 - oldData: il merge dei dati 2017/2018 dell'anagrafica delle scuole (per metcharli con i dati degli alunni):
 	* Regione EMILIA ROMAGNA -> EMILIA-ROMAGNA.
 	* Regione FRIULI-VENEZIA G. -> FRIULI-VENEZIA GIULIA.

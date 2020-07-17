@@ -475,6 +475,46 @@ const getScatterByRegione = async () => {
 	console.log(nodeSize);
 };
 
+const mapOrdineScuola = {
+	'SCUOLA PRIMARIA': 'Scuola Primaria',
+	'SCUOLA SECONDARIA I GRADO': 'Scuola Secondaria II grado',
+	'SCUOLA SECONDARIA II GRADO': 'Scuola Secondaria II grado',
+};
+
+const mapOrdineDetailsScuola = {
+	'SCUOLA PRIMARIA': 'S. Primaria',
+	'SCUOLA PRIMO GRADO': 'S. Primo grado',
+	'LICEO CLASSICO': 'L. Classico',
+	'ISTITUTO TECNICO NAUTICO': 'I. T. Nautico',
+	'LICEO SCIENTIFICO': 'L. Scientifico',
+	'ISTITUTO TECNICO INDUSTRIALE': 'I. T. Industriale',
+	'IST TEC COMMERCIALE E PER GEOMETRI': 'I. T. Commerciale e Geometri',
+	'IST PROF PER I SERVIZI ALBERGHIERI E RISTORAZIONE': 'I. P. Servizi Alberghieri e Ristorazione',
+	"IST PROF PER L'AGRICOLTURA E L'AMBIENTE": 'I. P. Agricoltura e Ambiente',
+	'IST PROF INDUSTRIA E ARTIGIANATO': 'I. P. Industria e Artigianato',
+	'ISTITUTO MAGISTRALE': 'I. Magistrale',
+	'LICEO ARTISTICO': 'L. Artistico',
+	"ISTITUTO D'ARTE": "I. d'Arte",
+	'IST PROF PER I SERVIZI COMMERCIALI E TURISTICI': 'I. P. Servizi Commerciali e Turistici',
+	'ISTITUTO TECNICO COMMERCIALE': 'I. T. Commerciale',
+	'IST PROF PER I SERVIZI COMMERCIALI': 'I. P. Servizi Commerciali',
+	'ISTITUTO TECNICO AGRARIO': 'I. T. Agrario',
+	'ISTITUTO TECNICO PER GEOMETRI': 'I. T. Geometri',
+	'IST PROF PER I SERVIZI SOCIALI': 'I. P. Servizi Sociali',
+	"ISTITUTO TECNICO PER ATTIVITA' SOCIALI (GIA' ITF)": 'I. T. Attività Sociali',
+	"IST PROF PER L'AGRICOLTURA": 'I. P. Agricoltura',
+	'ISTITUTO TECNICO PER IL TURISMO': 'I. T. Turismo',
+	'IST PROF INDUSTRIA E ARTIGIANATO PER CIECHI': 'I. P. Industria e Artigianato per ciechi',
+	"IST PROF INDUSTRIA E ATTIVITA' MARINARE": 'I. P. Industria e Attività Marinare',
+	'SCUOLA MAGISTRALE': 'S. Magistrale',
+	'IST PROF PER I SERVIZI PUBBLICITARI': 'I. P. Servizi Pubblicitari',
+	'ISTITUTO TECNICO AERONAUTICO': 'I. T. Aeronautico',
+	'IST PROF PER I SERVIZI TURISTICI': 'I. P. Servizi Turistici',
+	'IST PROF INDUSTRIA E ARTIGIANATO PER SORDOMUTI': 'I. P. Industria e Artigianato per Sordormuti',
+	'IST PROF CINEMATOGRAFIA E TELEVISIONE': 'I. P. Cinematrografia e Televisione',
+	'IST PROF ALBERGHIERO': 'I. P. Alberghiero',
+};
+
 // With oldData because Alunni is involved.
 const getRadarAlunniByRegione = async () => {
 	const dataScuola = await getData.readDataCsv('oldData.csv');
@@ -483,31 +523,19 @@ const getRadarAlunniByRegione = async () => {
 	const result = getData.getAlunniOrdineByRegione(dataScuola, dataAlunni);
 	const normal = {};
 	Object.entries(result.normal).forEach(([key, value]) => {
-		const element = [];
-		const el1 = {
-			key: Object.keys(value)[0],
-			[key]: Object.values(value)[0],
-		};
-		const el2 = {
-			key: Object.keys(value)[1],
-			[key]: Object.values(value)[1],
-		};
-		const el3 = {
-			key: Object.keys(value)[2],
-			[key]: Object.values(value)[2],
-		};
-		element.push(el1);
-		element.push(el2);
-		element.push(el3);
+		const element = Object.entries(value).map((d) => ({
+			key: d[1],
+			[mapOrdineScuola[d[0]]]: mapOrdineScuola[d[0]],
+		}));
 
-		normal[key] = element;
+		normal[doCamelCase(key)] = element;
 	});
 	computeData.saveJson(normal, 'dataRadarRegione');
 
 	const details = {};
 	Object.entries(result.details).forEach(([key1, value1], index1) => {
 		const element = {
-			xCategories: Object.keys(value1),
+			xCategories: Object.keys(value1).map((d) => mapOrdineDetailsScuola[d]),
 			values: Object.values(value1),
 			yMin: 0,
 			yMax: Math.max(...Object.values(value1)),
@@ -516,15 +544,14 @@ const getRadarAlunniByRegione = async () => {
 				y: value2,
 				color: colorsRegione[index1],
 				connectorColor: colorsRegione[index1],
-				name: key2,
+				name: mapOrdineDetailsScuola[key2],
 			})),
 		};
 
 		details[key1] = element;
 	});
 
-	computeData.saveJson(details, 'dataDetailsRadarRegione');
-	// computeData.saveJson(result.details, 'testtttt');
+	computeData.saveJson(details, 'dataLollipopRegione');
 };
 
 const getNodeSize = (data) => {
