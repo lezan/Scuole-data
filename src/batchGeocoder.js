@@ -38,7 +38,7 @@ module.exports = {
 			'&header=true',
 			'&inDelim=,',
 			'&outDelim=,',
-			'&outCols=displayLatitude,displayLongitude',
+			'&outCols=displayLatitude,displayLongitude,houseNumber,street,city,postalCode',
         	'&outputcombined=false',
         	'&language=it-IT',
 		].join('');
@@ -109,7 +109,7 @@ module.exports = {
 			'apiKey=',
 			hereApiKey,
 		].join('');
-		// console.log(url);
+		console.log(url);
 
 		const finalResult = superagent.get(url)
 			.pipe(unzipper.Parse())
@@ -153,8 +153,9 @@ module.exports = {
 
 						computeData.saveData(data, filename);
 
-						const dataLength = 5;
-						const mergedData = computeData.mergeData(allData.slice(0, dataLength), data);
+						const mergedData = computeData.mergeData(allData.slice(0, 51171), data); // No Aosta, Trento e Bolzano.
+						// const mergedData = computeData.mergeData(allData.slice(51172, allData.length), data); // Solo Aosta, Trento e Bolzano.
+						// const mergedData = computeData.mergeData(allData, data); // Tutto.
 
 						computeData.saveData(mergedData, 'newData');
 

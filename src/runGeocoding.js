@@ -50,7 +50,9 @@ const runGeocoding = async () => {
 const batchGeocoding = async () => {
 	const data = await computeData.getData();
 
-	const listAddress = computeData.getListAddressQualified(data.slice(0, dataLength));
+	const listAddress = computeData.getListAddressQualified(data.slice(0, 51171)); // No Aosta, Trento e Bolzano.
+	// const listAddress = computeData.getListAddressQualified(data.slice(51172, data.length)); // Solo Aosta, Trento e Bolzano.
+	// const listAddress = computeData.getListAddressQualified(data); // Tutto.
 
 	computeData.saveListAddress(listAddress);
 
