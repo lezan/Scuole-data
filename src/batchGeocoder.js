@@ -4,6 +4,7 @@ const fs = require('fs');
 const unzipper = require('unzipper');
 const etl = require('etl');
 const csv = require("csvtojson");
+const computeData = require('./computeData.js');
 
 dotenv.config();
 
@@ -99,7 +100,7 @@ module.exports = {
 			});
 	},
 
-	getResult: (requestId) => {
+	getResult: (requestId, allData, filename) => {
 		const url = [
 			baseUrl,
 			'/',
@@ -150,13 +151,28 @@ module.exports = {
 							long: +d.displayLongitude,
 						}));
 
-						return data;
+						computeData.saveData(data, filename);
+
+						const dataLength = 5;
+						const mergedData = computeData.mergeData(allData.slice(0, dataLength), data);
+
+						computeData.saveData(mergedData, 'newData');
+
+						// console.log('---------------------Data------------------');
+						// console.log(data);
+
+						// return data;
 					});
 
-				return result;
-			}));
+				// console.log('---------------------Result------------------');
+				// console.log(result);
 
-		return finalResult;
+				// return result;
+			}));
+		// console.log('---------------------FinalResult------------------');
+		// console.log(finalResult);
+
+		// return finalResult;
 	},
 };
 

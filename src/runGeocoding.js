@@ -66,10 +66,14 @@ const checkStatus = async (filename) => {
 const getResult = async (filename) => {
 	const requestId = fs.readFileSync(`./data/${filename}`, 'utf8');
 
-	const listLatLong = await batchGeocoder.getResult(requestId);
-	console.log('listLatLong: ', listLatLong);
+	const data = await computeData.getData();
 
-	// const timeRequest = filename.split('_')[1];
+	const timeRequest = filename.split('_')[1].replace('.txt', '');
+
+	const listLatLong = await batchGeocoder.getResult(requestId, data, `listLatLong_${timeRequest}`);
+	// console.log('listLatLong: ', listLatLong);
+
+	// const timeRequest = filename.split('_')[1].replace('.txt', '');
 
 	// computeData.saveData(listLatLong, `listLatLong_${timeRequest}`);
 
