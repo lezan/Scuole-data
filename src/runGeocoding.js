@@ -98,6 +98,18 @@ const test = async () => {
 	};
 
 	computeData.saveData(result, 'result_new');
+
+	let index = 0;
+	const missing = [];
+	for (let i = 0; i < result.length; i++) {
+		if (Number(result[i].recId) !== i) {
+			missing.push(result[i]);
+			i++;
+		}
+		index++;
+	}
+
+	computeData.saveData(missing, 'missing_new');
 };
 
 commander
