@@ -5,7 +5,6 @@ const ObjectsToCsv = require('objects-to-csv');
 module.exports = {
 	getData: async () => {
 		const importData = fs.readFileSync('./data/allData.csv');
-	
 		const data = await neatCsv(importData, { separator: ',' });
 	
 		return data;
@@ -99,8 +98,8 @@ module.exports = {
 		}
 
 		const newData = [];
-		data.forEach((d, index) => {
-			const element = { ...d, ...latLong[index], };
+		latLong.forEach((d) => {
+			const element = { ...d, ...data[d.id], };
 			newData.push(element);
 		});
 
@@ -109,6 +108,13 @@ module.exports = {
 
 	saveListAddress: (listAddress) => {
 		fs.writeFileSync('./data/listAddress.json', JSON.stringify(listAddress));
+	},
+
+	readListAddress: () => {
+		const importData = fs.readFileSync('./data/listAddress.json');
+		const data = JSON.parse(importData);
+
+		return data;
 	},
 
 	saveGeocoderResponse: (response) => {
@@ -121,11 +127,24 @@ module.exports = {
 
 	saveJson: (json, filename) => {
 		fs.writeFileSync(`./data/${filename}.json`, JSON.stringify(json));
+	},
 
-	}, 
+	readJson: (filename) => {
+		const importData = fs.readFileSync(filename);
+		const data = JSON.parse(importData);
+
+		return data;
+	},
 
 	saveData: async (data, filename) => {
 		const csvData = new ObjectsToCsv(data);
 	 	await csvData.toDisk(`./data/${filename}.csv`);
+	},
+
+	readData: async (filename) => {
+		const importData = fs.readFileSync(`./data/${filename}`);
+		const data = await neatCsv(importData, { separator: ',' });
+
+		return data;
 	},
 };

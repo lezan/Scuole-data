@@ -149,6 +149,7 @@ module.exports = {
 						console.log('------------');
 
 						const data = one.map((d) => ({
+							id: +d.recId,
 							lat: +d.displayLatitude,
 							long: +d.displayLongitude,
 						}));

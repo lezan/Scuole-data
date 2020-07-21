@@ -3,7 +3,6 @@ const geocoder = require('./geocoder.js');
 const batchGeocoder = require('./batchGeocoder');
 const commander = require('commander');
 const fs = require('fs');
-const neatCsv = require('neat-csv');
 
 const dataLength = 5;
 
@@ -86,13 +85,12 @@ const getResult = async (filename) => {
 };
 
 const test = async () => {
-	const importData = fs.readFileSync('./data/result_20200720-16-38_out.csv');
-	const data = await neatCsv(importData, { separator: ',' });
+	const data = await computeData.readData('result_20200720-16-38_out.csv');
 	
 	const result = [];
 	for (let i = 0; i < data.length; i++) {
 		result.push(data[i]);
-		if (data[i].seqLength !== 1) {
+		if (Number(data[i].seqLength) !== 1) {
 			i += data[i].seqLength - 1;
 		}
 	};
@@ -100,16 +98,33 @@ const test = async () => {
 	computeData.saveData(result, 'result_new');
 
 	let index = 0;
-	const missing = [];
+	const missingIndex = [];
 	for (let i = 0; i < result.length; i++) {
-		if (Number(result[i].recId) !== i) {
-			missing.push(result[i]);
-			i++;
+		if (Number(result[i].recId) !== index) {
+			missingIndex.push(i);
+			index++;
 		}
 		index++;
 	}
 
-	computeData.saveData(missing, 'missing_new');
+	console.log(missingIndex.length);
+	
+	const listAddress = computeData.readListAddress();
+	console.log(listAddress.length);
+
+	const missing = missingIndex.map((item) => listAddress[item]);
+
+	computeData.saveJson(missing, 'missing_new');
+
+	const clean = result.map((d) => ({
+		id: +d.recId,
+		lat: +d.displayLatitude,
+		long: +d.displayLongitude,
+	}));
+
+	const allData = await computeData.getData();
+	const mergedData = computeData.mergeData(allData.slice(0, 51171), clean);
+	computeData.saveData(mergedData, 'newData');
 };
 
 commander
