@@ -3,6 +3,7 @@ const geocoder = require('./geocoder.js');
 const batchGeocoder = require('./batchGeocoder');
 const commander = require('commander');
 const fs = require('fs');
+const neatCsv = require('neat-csv');
 
 const dataLength = 5;
 
@@ -84,6 +85,21 @@ const getResult = async (filename) => {
 	// computeData.saveData(mergedData, 'newData');
 };
 
+const test = async () => {
+	const importData = fs.readFileSync('./data/result_20200720-16-38_out.csv');
+	const data = await neatCsv(importData, { separator: ',' });
+	
+	const result = [];
+	for (let i = 0; i < data.length; i++) {
+		result.push(data[i]);
+		if (data[i].seqLength !== 1) {
+			i += data[i].seqLength - 1;
+		}
+	};
+
+	computeData.saveData(result, 'result_new');
+};
+
 commander
 	.version('1.0.0', '-v, --version')
 	.usage('[OPTIONS]...')
@@ -91,6 +107,7 @@ commander
 	.option('-bg, --batchGeocoding', 'Use bath geocoding')
 	.option('-cs, --checkStatus <requestIdFile>', 'Check status request. Take requestId from <requestIdFile>')
 	.option('-g, --getResult <requestIdFile>', 'Get result. Take requestId from <requestIdFile>')
+	.option('-t, --test', '')
 	.parse(process.argv);
 
 if (commander.singleGeocoding) {
@@ -107,4 +124,8 @@ if (commander.checkStatus) {
 
 if (commander.getResult) {
 	getResult(commander.getResult);
+}
+
+if (commander.test) {
+	test();
 }

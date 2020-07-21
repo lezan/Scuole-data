@@ -94,6 +94,8 @@ module.exports = {
 				console.log('TotalCount: ', findXmlTag(result, 'TotalCount'));
 				console.log('ValidCount: ', findXmlTag(result, 'ValidCount'));
 				console.log('InvalidCount: ', findXmlTag(result, 'InvalidCount'));
+				console.log('SuccessCount: ', findXmlTag(result, 'SuccessCount'));
+				console.log('ErrorCount: ', findXmlTag(result, 'ErrorCount'));
 			})
 			.catch((error) => {
 				console.error('Error checking batch job', error.message);
@@ -109,7 +111,7 @@ module.exports = {
 			'apiKey=',
 			hereApiKey,
 		].join('');
-		console.log(url);
+		// console.log(url);
 
 		const finalResult = superagent.get(url)
 			.pipe(unzipper.Parse())
