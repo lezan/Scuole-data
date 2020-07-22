@@ -477,7 +477,7 @@ const getScatterByRegione = async () => {
 
 const mapOrdineScuola = {
 	'SCUOLA PRIMARIA': 'Scuola Primaria',
-	'SCUOLA SECONDARIA I GRADO': 'Scuola Secondaria II grado',
+	'SCUOLA SECONDARIA I GRADO': 'Scuola Secondaria I grado',
 	'SCUOLA SECONDARIA II GRADO': 'Scuola Secondaria II grado',
 };
 
@@ -525,8 +525,8 @@ const getRadarAlunniByRegione = async () => {
 	const normal = {};
 	Object.entries(result.normal).forEach(([key, value]) => {
 		const element = Object.entries(value).map((d) => ({
-			key: d[1],
-			[mapOrdineScuola[d[0]]]: mapOrdineScuola[d[0]],
+			ordine: mapOrdineScuola[d[0]],
+			[doCamelCase(key)]: d[1],
 		}));
 
 		normal[doCamelCase(key)] = element;
