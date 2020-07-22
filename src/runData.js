@@ -549,7 +549,7 @@ const getRadarAlunniByRegione = async () => {
 			})),
 		};
 
-		details[key1] = element;
+		details[doCamelCase(key1)] = element;
 	});
 
 	computeData.saveJson(details, 'dataLollipopRegione');
