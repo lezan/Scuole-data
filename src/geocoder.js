@@ -52,6 +52,11 @@ module.exports = {
 	/*
 	Use new API:
 	https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics-api/code-geocode-address.html
+
+	If not work try:
+	https://github.com/Call-for-Code/twc-disease-tracker-api-nodejs/blob/31776042013abfb112dc91d41eab8e42c584f3de/lib/here-api.js
+	and also:
+	https://github.com/search?l=JavaScript&q=https%3A%2F%2Fgeocode.search.hereapi.com%2Fv1%2F+geocode&type=Code
 	*/
 	newGeocoding: async (listAddress) => {
 		const baseURL = 'https://geocode.search.hereapi.com/v1/geocode?';
