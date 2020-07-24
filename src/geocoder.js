@@ -1,5 +1,6 @@
 const NodeGeocoder = require('node-geocoder');
 const dotenv = require('dotenv');
+const axios = require('axios');
 
 dotenv.config();
 
@@ -12,6 +13,9 @@ const options = {
 };
 
 module.exports = {
+	/*
+	Use node-geocoder.
+	*/
 	singleGeocoding: (address) => {	 
 		const geocoder = NodeGeocoder(options);
 		 
@@ -28,6 +32,9 @@ module.exports = {
 		return resultData;
 	},
 	
+	/*
+	Use node-geocoder.
+	*/
 	batchGeocoding: (listAddress) => {
 		const geocoder = NodeGeocoder(options);
 		 
@@ -40,5 +47,41 @@ module.exports = {
 			});
 
 		return resultData;
+	},
+
+	/*
+	Use new API:
+	https://developer.here.com/documentation/geocoding-search-api/dev_guide/topics-api/code-geocode-address.html
+	*/
+	newGeocoding: async (listAddress) => {
+		const baseURL = 'https://geocode.search.hereapi.com/v1/geocode?';
+
+		try {
+			const result = await listAddress.map((d) => {
+				const params = {
+					api: options.apiKey,
+					q: `${d.address} ${d.city} ${d.postalCode} ${d.country}`
+				};
+
+				const url = baseURL + queryString.stringify(params);
+
+				const data = await axios.get(url);
+
+				if (data.length > 1) {
+					data.sort((a, b) => b.scoring - a.scoring);
+				}
+
+				return ({
+					codiceScuola: d.codiceScuola,
+					lat: data[0].position.lat || 0,
+					long: data[0].position.lng || 0,
+				});
+			});
+
+			return result;
+		} catch (e) {
+			console.error('Geocode error', e);
+    		return {};
+		}
 	},
 };

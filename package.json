@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "commander": "^5.1.0",
     "csvtojson": "^2.0.10",
     "d3-collection": "^1.0.7",
@@ -17,6 +18,7 @@
     "neat-csv": "^5.2.0",
     "node-geocoder": "^3.27.0",
     "objects-to-csv": "^1.3.6",
+    "query-string": "^6.13.1",
     "superagent": "^5.3.1",
     "unzipper": "^0.10.11"
   }

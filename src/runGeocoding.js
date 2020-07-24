@@ -146,6 +146,15 @@ const test = async () => {
 	computeData.saveData(mergedData, 'newData');
 };
 
+const newGeocoding = async () => {
+	const data = await computeData.getData();
+
+	const listAddress = computeData.getListAddressQualifiedv2(data.slice(0, 51171)); // No Aosta, Trento e Bolzano.
+
+	const result = await geocoder.newGeocoding(listAddress);
+	computeData.saveData(result, 'testDataNewGeocoding');
+};
+
 commander
 	.version('1.0.0', '-v, --version')
 	.usage('[OPTIONS]...')
@@ -154,6 +163,7 @@ commander
 	.option('-cs, --checkStatus <requestIdFile>', 'Check status request. Take requestId from <requestIdFile>')
 	.option('-g, --getResult <requestIdFile>', 'Get result. Take requestId from <requestIdFile>')
 	.option('-t, --test', '')
+	.option('-tng, --testNewGeocoding', '')
 	.parse(process.argv);
 
 if (commander.singleGeocoding) {
@@ -174,4 +184,8 @@ if (commander.getResult) {
 
 if (commander.test) {
 	test();
+}
+
+if (commander.testNewGeocoding) {
+	newGeocoding();
 }
