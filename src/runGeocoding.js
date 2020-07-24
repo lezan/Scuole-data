@@ -85,8 +85,16 @@ const getResult = async (filename) => {
 };
 
 const test = async () => {
+	/*
+	Questi sono i dati senza Aosta, Trento e Bolzano geocodificati.
+	*/
 	const data = await computeData.readData('result_20200720-16-38_out.csv');
 	
+	/*
+	Prendo solo la prima istanza quando ci sono più risultati
+	per uno stesso indirizzo.
+	E' una decisione arbitraria.
+	*/
 	const result = [];
 	for (let i = 0; i < data.length; i++) {
 		result.push(data[i]);
@@ -97,6 +105,10 @@ const test = async () => {
 
 	computeData.saveData(result, 'result_new');
 
+	/*
+	Cerco quali sono gli indici degli indirizzi che non sono riusciti ad ottenere un risultato
+	dal geocoding.
+	*/
 	let index = 0;
 	const missingIndex = [];
 	for (let i = 0; i < result.length; i++) {
@@ -112,10 +124,17 @@ const test = async () => {
 	const listAddress = computeData.readListAddress();
 	console.log(listAddress.length);
 
+	/*
+	Trovo gli indirizzi che corrispondono agli indici individuati precedentemente.
+	*/
 	const missing = missingIndex.map((item) => listAddress[item]);
-
 	computeData.saveJson(missing, 'missing_new');
 
+	/*
+	Preparo i dati e mergio per ottenere il risultato finale.
+	Elimino tutti i missings dal dato finale e incluso solo quelli
+	che hanno ritornato il geocoding.
+	*/
 	const clean = result.map((d) => ({
 		id: +d.recId,
 		lat: +d.displayLatitude,
